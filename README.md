@@ -1,5 +1,7 @@
 # tmux-mas
 
+[![CI](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg)](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml)
+
 `tmux-mas` runs small multi-agent teams inside tmux.
 
 It launches one agent CLI per tmux pane, injects run-local communication tools,
@@ -27,9 +29,21 @@ Optional:
 From a clone:
 
 ```bash
-git clone https://github.com/<you>/tmux-mas.git
+git clone https://github.com/choism4/tmux-mas.git
 cd tmux-mas
 ./install.sh
+```
+
+Default install target:
+
+```text
+~/.local/bin/tmux-mas
+```
+
+Custom install prefix:
+
+```bash
+PREFIX=/usr/local ./install.sh
 ```
 
 Or use it directly without installing:
@@ -41,6 +55,8 @@ Or use it directly without installing:
 ## Quick Start
 
 ```bash
+./tmux-mas --help
+./tmux-mas doctor
 ./tmux-mas list
 ./tmux-mas run hello-claude
 tmux attach -t hello-claude
@@ -157,6 +173,8 @@ tmux send-keys -t "$pane" C-m
 
 ```bash
 ./tmux-mas --help
+./tmux-mas --version
+./tmux-mas doctor [scenario-name]
 ./tmux-mas run <scenario.yml>
 ./tmux-mas run <scenario-name>
 ./tmux-mas list
@@ -170,9 +188,10 @@ tmux send-keys -t "$pane" C-m
 ```bash
 python3 -m pip install -r requirements.txt
 bash -n tmux-mas install.sh
-python3 -m py_compile runtime/run_scenario.py tests/smoke_parse.py
+./tmux-mas doctor
+python3 -m py_compile runtime/run_scenario.py runtime/doctor.py tests/smoke_parse.py
 python3 tests/smoke_parse.py
-git tag v0.1.0
+git tag v0.1.1
 git push origin main --tags
 ```
 

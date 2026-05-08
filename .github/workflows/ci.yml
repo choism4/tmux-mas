@@ -17,8 +17,11 @@ jobs:
       - name: Check shell
         run: bash -n tmux-mas install.sh
       - name: Check help
-        run: ./tmux-mas --help
+        run: |
+          ./tmux-mas --help
+          ./tmux-mas --version
+          ./tmux-mas doctor
       - name: Check Python
-        run: python -m py_compile runtime/run_scenario.py tests/smoke_parse.py
+        run: python -m py_compile runtime/run_scenario.py runtime/doctor.py tests/smoke_parse.py
       - name: Parse scenarios
         run: python tests/smoke_parse.py

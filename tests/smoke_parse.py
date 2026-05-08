@@ -10,6 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    if not version:
+        raise SystemExit("VERSION must not be empty")
+
     scenarios = sorted((ROOT / "scenarios").glob("*.yml")) + sorted((ROOT / "scenarios").glob("*.yaml"))
     if not scenarios:
         raise SystemExit("No scenarios found")

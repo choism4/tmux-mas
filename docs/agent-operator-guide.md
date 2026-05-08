@@ -11,6 +11,19 @@ List bundled scenarios:
 ./tmux-mas list
 ```
 
+Print version:
+
+```bash
+./tmux-mas --version
+```
+
+Check the local environment:
+
+```bash
+./tmux-mas doctor
+./tmux-mas doctor hello-claude
+```
+
 Run a scenario by name:
 
 ```bash

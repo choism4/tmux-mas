@@ -8,6 +8,7 @@ while [[ -L "$SOURCE" ]]; do
   [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
 done
 ROOT="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+VERSION="$(cat "$ROOT/VERSION" 2>/dev/null || printf '0.0.0-dev')"
 
 usage() {
   cat <<'EOF'
@@ -20,9 +21,11 @@ Audience:
 Usage:
   tmux-mas run <scenario.yml|scenario-name>
   tmux-mas list
+  tmux-mas doctor [scenario.yml|scenario-name]
   tmux-mas status [session]
   tmux-mas attach <session>
   tmux-mas stop <session>
+  tmux-mas version
   tmux-mas help
 
 Commands:
@@ -43,6 +46,10 @@ Commands:
   list
       Print available bundled scenarios, one absolute path per line.
 
+  doctor [scenario]
+      Check required commands and Python dependencies.
+      With a scenario, also validate the scenario and runner command.
+
   status [session]
       Without a session, print tmux sessions.
       With a session, print panes in this stable format:
@@ -53,6 +60,9 @@ Commands:
 
   stop <session>
       Kill the tmux session.
+
+  version
+      Print tmux-mas version.
 
 Scenario Contract:
   Required YAML keys:
@@ -167,6 +177,17 @@ case "$cmd" in
   list)
     find "$ROOT/scenarios" -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) -print | sort
     ;;
+  doctor)
+    if [[ $# -gt 2 ]]; then
+      usage >&2
+      exit 1
+    fi
+    if [[ $# -eq 2 ]]; then
+      scenario="$(resolve_scenario "$2")"
+      exec python3 "$ROOT/runtime/doctor.py" "$scenario"
+    fi
+    exec python3 "$ROOT/runtime/doctor.py"
+    ;;
   stop)
     if [[ $# -ne 2 ]]; then
       usage >&2
@@ -190,6 +211,9 @@ case "$cmd" in
     else
       tmux list-sessions
     fi
+    ;;
+  -v|--version|version)
+    printf '%s\n' "$VERSION"
     ;;
   -h|--help|help|"")
     usage
