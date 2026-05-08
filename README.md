@@ -1,34 +1,49 @@
-# tmux-mas
+<p align="center">
+  <img src="assets/tmuxmas-logo.svg" alt="tmux-mas logo" width="760">
+</p>
 
-[![CI](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg)](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml)
+<h1 align="center">tmux-mas</h1>
+
+<p align="center">
+  <strong>tmux Multi Agents System</strong>
+  <br>
+  Spin up agent CLI teams as tmux panes. Let them talk with injected tools.
+</p>
+
+<p align="center">
+  <a href="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0ea5e9"></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.2-f43f5e">
+  <img alt="Requires tmux" src="https://img.shields.io/badge/requires-tmux-22c55e">
+  <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
+</p>
+
+---
 
 `tmux-mas` means **tmux Multi Agents System**.
 
-It runs small multi-agent teams inside tmux.
+Nickname: **tmuxmas**. Like Christmas, but Santa brings panes, prompts, and
+agent-to-agent messages.
 
-It launches one agent CLI per tmux pane, injects run-local communication tools,
-and lets agents talk to each other with `agent_send` and `agent_broadcast`.
+`tmux-mas` starts a tmux session from a YAML scenario. Each agent gets its own
+pane, prompt, role, and run-local tools such as `agent_send` and
+`agent_broadcast`. The launcher starts the team; it does not sit in the middle
+of the conversation.
 
-The launcher starts the team. It does not facilitate the conversation.
+## Why
 
-## Requirements
+Most multi-agent demos hide the actual coordination surface. `tmux-mas` makes it
+boringly visible:
 
-Required system package:
-
-- `tmux`
-
-Runtime commands:
-
-- `python3`
-- the command named by `runner.command` in your scenario
-
-Optional:
-
-- `agent-browser` for browser/UI scenarios
+| What you get | Why it matters |
+| --- | --- |
+| One agent CLI per tmux pane | Every participant is inspectable and interruptible. |
+| YAML scenarios | Teams are reproducible, reviewable, and shareable. |
+| Run-local tools | Agents communicate through a stable contract, not global shell hacks. |
+| Runner command prefixes | Use `codex`, `claude`, `gemini`, or any custom agent CLI. |
+| No `cmux` dependency | The required system package is `tmux`. |
 
 ## Install
-
-From a clone:
 
 ```bash
 git clone https://github.com/choism4/tmux-mas.git
@@ -42,107 +57,118 @@ Default install target:
 ~/.local/bin/tmux-mas
 ```
 
-Custom install prefix:
+Custom prefix:
 
 ```bash
 PREFIX=/usr/local ./install.sh
 ```
 
-Or use it directly without installing:
+You can also run it directly from the repo:
 
 ```bash
-./tmux-mas list
+./tmux-mas --help
 ```
 
 ## Quick Start
 
+Run the smallest Claude scenario:
+
 ```bash
-./tmux-mas --help
-./tmux-mas doctor
-./tmux-mas list
+./tmux-mas doctor hello-claude
 ./tmux-mas run hello-claude
 tmux attach -t hello-claude
 ```
 
-Or:
+If Claude asks to trust the workspace, select `1. Yes`.
+
+Stop it:
 
 ```bash
-./tmux-mas attach hello-claude
 ./tmux-mas stop hello-claude
 ```
 
-For the full agent-facing operator contract, read
-[`docs/agent-operator-guide.md`](docs/agent-operator-guide.md).
+Run the landing page team:
 
-## Scenario Files
+```bash
+./tmux-mas doctor landing-page
+./tmux-mas run landing-page
+tmux attach -t landing-page-team-yml
+```
 
-Scenarios are YAML files:
+## The Core Idea
+
+An agent receives a prompt that includes:
+
+- its role
+- the participant pane map
+- shared resources
+- available tools
+- scenario rules
+- success criteria
+
+Agents then communicate with injected run-local commands:
+
+```bash
+agent_send %214 "HOST: Did this tmux message reach you?"
+agent_broadcast "LEAD: Everyone give one concrete risk."
+```
+
+The submit primitive is intentionally small:
+
+```bash
+tmux send-keys -t "$pane" -l "$message"
+sleep 0.3
+tmux send-keys -t "$pane" "$submit_key"
+```
+
+## Scenario Example
 
 ```yaml
-name: landing-page-team
-session: landing-page-team-yml
-window: landing
+name: hello-claude
+session: hello-claude
+window: team
+
 runner:
-  type: codex
-  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
-  submit_key: C-m
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
 
 agents:
-  - id: LEAD
-    role: Project owner.
-  - id: DESIGNER
-    role: Landing page designer.
-  - id: DEVELOPER
-    role: Frontend developer.
-  - id: QA
-    role: Browser QA reviewer.
+  - id: HOST
+    role: Starts the exchange, asks one concise question, and closes after one reply.
+  - id: GUEST
+    role: Replies once with a concise answer, then stops.
 
 tools:
   - send
   - broadcast
-  - browser
 
-resources:
-  - name: site
-    type: static-site
-    entry: index.html
-    seed: templates/signaldesk.html
+kickoff:
+  agent: HOST
+  prompt: Send GUEST one short greeting and ask whether the tmux message reached them.
+
+rules:
+  - Keep messages short.
+  - Receiving a message does not require a response unless your role has useful input.
+  - Stop after the first complete exchange.
+
+success:
+  - HOST sends one message to GUEST.
+  - GUEST sends one reply to HOST.
+  - Both agents stop naturally.
 ```
 
-## Runtime Model
+## Runners
 
-For each run, `tmux-mas` creates:
-
-- a tmux session
-- one pane per agent
-- pane titles from agent IDs
-- run-local tools in `runs/<run-id>/tools/<agent>/`
-- prompts in `runs/<run-id>/prompts/`
-- static-site resources when requested
-
-Agents receive tools through `PATH`:
-
-```bash
-agent_send <target-pane> "LEAD: message"
-agent_broadcast "LEAD: message"
-agent-browser open http://127.0.0.1:12345
-```
-
-Runner presets:
+Presets:
 
 ```yaml
 runner: codex
-```
-
-```yaml
 runner: claude
-```
-
-```yaml
 runner: gemini
 ```
 
-For public scenarios, prefer the explicit form:
+Public scenarios should prefer explicit runner objects:
 
 ```yaml
 runner:
@@ -151,56 +177,70 @@ runner:
   submit_key: C-m
 ```
 
-`command` is an agent-calling prefix. `tmux-mas` appends the rendered prompt as
-the final shell argument. `submit_key` defaults to `C-m`; override it only when
-your agent TUI needs a different tmux key name. In current Claude Code TUI
-builds, `Enter` may be required.
-
-You can also override a scenario runner command for one launch:
+`runner.command` is an agent-calling prefix. `tmux-mas` appends the rendered
+prompt as the final shell argument:
 
 ```bash
-TMUX_MAS_RUNNER=claude ./tmux-mas run scenarios/hello-claude.yml
-TMUX_MAS_RUNNER_COMMAND='claude --dangerously-skip-permissions' ./tmux-mas run scenarios/hello-claude.yml
+exec <runner.command> "$(cat <prompt-file>)"
 ```
 
-The message submit primitive is:
+Known local submit keys:
 
-```bash
-tmux send-keys -t "$pane" -l "$message"
-sleep 0.3
-tmux send-keys -t "$pane" C-m
-```
+| Agent TUI | `submit_key` |
+| --- | --- |
+| Codex | `C-m` |
+| Claude Code v2.1.133 | `Enter` |
 
 ## Commands
 
 ```bash
-./tmux-mas --help
-./tmux-mas --version
-./tmux-mas doctor [scenario-name]
-./tmux-mas run <scenario.yml>
-./tmux-mas run <scenario-name>
-./tmux-mas list
-./tmux-mas status [session]
-./tmux-mas attach <session>
-./tmux-mas stop <session>
+tmux-mas --help
+tmux-mas --version
+tmux-mas doctor [scenario-name]
+tmux-mas list
+tmux-mas run <scenario.yml|scenario-name>
+tmux-mas status [session]
+tmux-mas attach <session>
+tmux-mas stop <session>
 ```
+
+## Requirements
+
+Required:
+
+- `tmux`
+- `python3`
+- `PyYAML`
+- the command named by `runner.command`
+
+Optional:
+
+- `agent-browser` for browser/UI scenarios
+
+Not required:
+
+- `cmux`
+
+## Docs
+
+- [Agent Operator Guide](docs/agent-operator-guide.md)
+- [Example: Claude hello](scenarios/hello-claude.yml)
+- [Example: landing page team](scenarios/landing-page.yml)
 
 ## Release Checklist
 
 ```bash
-python3 -m pip install -r requirements.txt
 bash -n tmux-mas install.sh
+./tmux-mas --help
+./tmux-mas --version
 ./tmux-mas doctor
 python3 -m py_compile runtime/run_scenario.py runtime/doctor.py tests/smoke_parse.py
 python3 tests/smoke_parse.py
-git tag v0.1.1
+git tag v0.1.2
 git push origin main --tags
 ```
 
-## Notes
+## Status
 
-- `tmux` is the core required package.
-- `cmux` is not required.
-- `agent-browser` is optional, but browser scenarios use it when available.
-- Run artifacts are ignored by git under `runs/`.
-- This project is experimental. Treat agent output as untrusted.
+Experimental, but intentionally small. Treat agent output as untrusted, keep
+scenario files explicit, and inspect the tmux panes when behavior matters.

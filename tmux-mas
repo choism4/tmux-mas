@@ -20,6 +20,7 @@ Audience:
 
 Name:
   mas = Multi Agents System. tmux-mas runs agent CLI teams as tmux panes.
+  Nickname: tmuxmas. Like Christmas, but for terminal agent teams.
 
 Usage:
   tmux-mas run <scenario.yml|scenario-name>

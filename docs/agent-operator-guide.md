@@ -7,6 +7,9 @@ This guide is written for agents and automation that need to operate
 small multi-agent runtime: one agent CLI per pane, run-local communication tools,
 and a YAML scenario as the source of truth.
 
+Nickname: **tmuxmas**. The name intentionally rhymes with Christmas; the project
+uses a light Santa-hat terminal mark without changing the technical contract.
+
 ## Minimal Operation
 
 List bundled scenarios:
