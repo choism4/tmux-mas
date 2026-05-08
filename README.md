@@ -40,6 +40,130 @@ boringly visible:
 | Runner command prefixes | Use `codex`, `claude`, `gemini`, or any custom agent CLI. |
 | No `cmux` dependency | The required system package is `tmux`. |
 
+## Same Prompt, Different Runtime
+
+Same scenario. Same task prompt. Different execution surface.
+
+Without `tmux-mas`, one agent has to hold the whole job in one context. With
+`tmux-mas`, the same prompt becomes a visible team: separate panes, named roles,
+pane-to-pane messages, and a concrete artifact target.
+
+### 1. Generative Art Studio
+
+**Same prompt**
+
+> Create a browser-openable generative art gallery. Explore a visual direction,
+> implement it, critique it, and produce the final artifact.
+
+**Without tmux-mas**
+
+```text
+one agent
+one taste profile
+one implementation pass
+maybe a paragraph, maybe a file
+hard to see where the critique happened
+```
+
+**Using tmux-mas**
+
+```bash
+tmux-mas run generative-art-studio-codex
+```
+
+```text
+CURATOR   chooses the direction
+ARTIST    designs the visual system
+ENGINEER  builds gallery.html
+CRITIC    forces the improvement pass
+```
+
+**Result target**
+
+```text
+runs/<id>/artifact/gallery.html
+```
+
+Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-codex.yml)
+
+### 2. Travel Itinerary as a Print-Ready PDF Source
+
+**Same prompt**
+
+> Plan a four-day Tokyo trip for food, design, and record stores. Make it
+> realistic, readable, rainy-day safe, and print-ready.
+
+**Without tmux-mas**
+
+```text
+one agent
+one itinerary voice
+easy to overpack the days
+print/PDF structure is an afterthought
+local tradeoffs are mixed into the prose
+```
+
+**Using tmux-mas**
+
+```bash
+tmux-mas run travel-itinerary-pdf-claude
+```
+
+```text
+PLANNER   owns day-by-day pacing
+LOCAL     checks neighborhoods and transit
+DESIGNER  turns it into a printable layout
+EDITOR    removes confusion and overpromising
+```
+
+**Result target**
+
+```text
+runs/<id>/artifact/itinerary.html
+runs/<id>/artifact/itinerary.md
+```
+
+Scenario: [`travel-itinerary-pdf-claude.yml`](scenarios/travel-itinerary-pdf-claude.yml)
+
+### 3. API Spec Design
+
+**Same prompt**
+
+> Design an API for launching, listing, watching, and stopping multi-agent tmux
+> sessions. Include errors and client examples.
+
+**Without tmux-mas**
+
+```text
+one agent
+endpoint list first
+failure modes later
+client ergonomics are guessed, not represented
+review happens inside the same voice that wrote it
+```
+
+**Using tmux-mas**
+
+```bash
+tmux-mas run api-spec-design-codex
+```
+
+```text
+API_LEAD  owns the resource model
+CLIENT    checks SDK and automation ergonomics
+SERVER    checks implementation constraints
+REVIEWER  hunts ambiguity and unsafe defaults
+```
+
+**Result target**
+
+```text
+runs/<id>/artifact/openapi.yaml
+runs/<id>/artifact/client-examples.md
+```
+
+Scenario: [`api-spec-design-codex.yml`](scenarios/api-spec-design-codex.yml)
+
 ## Install
 
 ```bash
@@ -238,7 +362,6 @@ Not required:
 ## Docs
 
 - [Agent Operator Guide](docs/agent-operator-guide.md)
-- [Sample artifact: Codex + Claude comic scenario](docs/codex-claude-four-panel-comic.md)
 - [Example: Claude hello](scenarios/hello-claude.yml)
 - [Example: Codex hello](scenarios/hello-codex.yml)
 - [Example: Gemini hello](scenarios/hello-gemini.yml)
@@ -254,7 +377,6 @@ Not required:
   - [ops-runbook-codex](scenarios/ops-runbook-codex.yml)
   - [brand-system-studio-gemini](scenarios/brand-system-studio-gemini.yml)
   - [ux-research-synthesis-claude](scenarios/ux-research-synthesis-claude.yml)
-  - [codex-claude-comic-codex](scenarios/codex-claude-comic-codex.yml)
 - Mock scenarios live under `tests/fixtures/scenarios/` and are used only for deterministic CI.
 
 ## Release Checklist
