@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/tmuxmas-logo.svg" alt="tmux-mas logo" width="760">
+  <img src="assets/tmux-mas-hero.png" alt="tmux-mas hero" width="860">
 </p>
 
 <h1 align="center">tmux-mas</h1>
@@ -21,9 +21,6 @@
 ---
 
 `tmux-mas` means **tmux Multi Agents System**.
-
-Nickname: **tmuxmas**. Like Christmas, but Santa brings panes, prompts, and
-agent-to-agent messages.
 
 `tmux-mas` starts a tmux session from a YAML scenario. Each agent gets its own
 pane, prompt, role, and run-local tools such as `agent_send` and
@@ -200,8 +197,17 @@ tmux-mas doctor [scenario-name]
 tmux-mas list
 tmux-mas run <scenario.yml|scenario-name>
 tmux-mas status [session]
+tmux-mas watch <session>
 tmux-mas attach <session>
 tmux-mas stop <session>
+```
+
+`watch` is the operator awareness loop. It polls pane output and reports
+`changed`, `quiet`, `idle`, and `dead` panes:
+
+```bash
+tmux-mas watch hello-claude --idle-seconds 120
+tmux-mas watch hello-claude --once
 ```
 
 ## Requirements

@@ -20,13 +20,13 @@ Audience:
 
 Name:
   mas = Multi Agents System. tmux-mas runs agent CLI teams as tmux panes.
-  Nickname: tmuxmas. Like Christmas, but for terminal agent teams.
 
 Usage:
   tmux-mas run <scenario.yml|scenario-name>
   tmux-mas list
   tmux-mas doctor [scenario.yml|scenario-name]
   tmux-mas status [session]
+  tmux-mas watch <session> [--once] [--interval seconds] [--idle-seconds seconds]
   tmux-mas attach <session>
   tmux-mas stop <session>
   tmux-mas version
@@ -58,6 +58,10 @@ Commands:
       Without a session, print tmux sessions.
       With a session, print panes in this stable format:
         <session>:<window>.<pane-index> <pane-id> <agent-id> <command>
+
+  watch <session>
+      Poll pane output and print changed, quiet, idle, and dead panes.
+      This is the operator awareness loop; use --once for a single snapshot.
 
   attach <session>
       Attach to the tmux session.
@@ -215,6 +219,15 @@ case "$cmd" in
     else
       tmux list-sessions
     fi
+    ;;
+  watch)
+    if [[ $# -lt 2 ]]; then
+      usage >&2
+      exit 1
+    fi
+    session="$2"
+    shift 2
+    exec python3 "$ROOT/runtime/watch_session.py" "$session" "$@"
     ;;
   -v|--version|version)
     printf '%s\n' "$VERSION"

@@ -7,9 +7,6 @@ This guide is written for agents and automation that need to operate
 small multi-agent runtime: one agent CLI per pane, run-local communication tools,
 and a YAML scenario as the source of truth.
 
-Nickname: **tmuxmas**. The name intentionally rhymes with Christmas; the project
-uses a light Santa-hat terminal mark without changing the technical contract.
-
 ## Minimal Operation
 
 List bundled scenarios:
@@ -41,6 +38,13 @@ Inspect panes:
 
 ```bash
 ./tmux-mas status hello-claude
+```
+
+Watch for pane changes and stalls:
+
+```bash
+./tmux-mas watch hello-claude --idle-seconds 120
+./tmux-mas watch hello-claude --once
 ```
 
 Attach for visual inspection:
@@ -254,6 +258,28 @@ Fields:
 2. tmux pane id
 3. agent id
 4. current command
+
+## Watch Output
+
+`tmux-mas watch <session>` polls pane tails and prints one row per pane:
+
+```text
+== 2026-05-08T10:32:00+00:00 ==
+   changed hello-claude:team.1       %213   HOST             node         HOST: sent greeting
+     quiet hello-claude:team.2       %214   GUEST            node         › Reply to HOST
+ idle>120s hello-claude:team.3       %215   QA               node         Worked for 2m 05s
+```
+
+Statuses:
+
+- `new`: first time this pane was observed
+- `changed`: captured pane tail changed since the previous poll
+- `quiet`: unchanged, but below the idle threshold
+- `idle>Ns`: unchanged for at least the configured idle threshold
+- `dead`: tmux reports the pane as dead
+
+Use `--once` when another orchestrator process wants to sample state without
+holding the terminal.
 
 ## Failure Modes
 
