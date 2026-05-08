@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/comics/codex-claude-rivalry-moe-v3-panel2fix.png" alt="Claude Code, Codex, Gemini, and tmux-mas four-panel comic" width="860">
+  <img src="assets/comics/codex-claude-rivalry-moe-final.png" alt="Claude Code, Codex, Gemini, and tmux-mas four-panel comic" width="860">
 </p>
 
 ---
