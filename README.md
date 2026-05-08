@@ -57,7 +57,23 @@ Scenario: [`codex-claude-rivalry-comic-codex.yml`](scenarios/codex-claude-rivalr
 These examples are built to produce files you can open, inspect, screenshot, or
 ship.
 
+#### Landing Page
+
+| Without tmux-mas | Using tmux-mas |
+| --- | --- |
+| ![Single-agent landing page artifact](assets/readme/landing-without.png) | ![tmux-mas landing page artifact](assets/readme/landing-with.png) |
+
+```bash
+tmux-mas run landing-page
+```
+
+Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
+
 #### Generative Art Studio
+
+| Without tmux-mas | Using tmux-mas |
+| --- | --- |
+| ![Single-agent generative art artifact](assets/readme/art-without.png) | ![tmux-mas generative art artifact](assets/readme/art-with.png) |
 
 > Create a browser-openable generative art gallery. Explore a visual direction,
 > implement it, critique it, and produce the final artifact.
@@ -74,6 +90,10 @@ Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-co
 
 #### Travel Itinerary as a Print-Ready PDF Source
 
+| Without tmux-mas | Using tmux-mas |
+| --- | --- |
+| ![Single-agent travel itinerary artifact](assets/readme/travel-without.png) | ![tmux-mas travel itinerary artifact](assets/readme/travel-with.png) |
+
 > Plan a four-day Tokyo trip for food, design, and record stores. Make it
 > realistic, readable, rainy-day safe, and print-ready.
 
@@ -89,6 +109,10 @@ runs/<id>/artifact/itinerary.md
 Scenario: [`travel-itinerary-pdf-claude.yml`](scenarios/travel-itinerary-pdf-claude.yml)
 
 #### API Spec Design
+
+| Without tmux-mas | Using tmux-mas |
+| --- | --- |
+| ![Single-agent API spec artifact](assets/readme/api-without.png) | ![tmux-mas API spec artifact](assets/readme/api-with.png) |
 
 > Design an API for launching, listing, watching, and stopping multi-agent tmux
 > sessions. Include errors and client examples.
