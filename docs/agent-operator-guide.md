@@ -3,6 +3,10 @@
 This guide is written for agents and automation that need to operate
 `tmux-mas` without guessing.
 
+`tmux-mas` means **tmux Multi Agents System**. It treats a tmux session as a
+small multi-agent runtime: one agent CLI per pane, run-local communication tools,
+and a YAML scenario as the source of truth.
+
 ## Minimal Operation
 
 List bundled scenarios:

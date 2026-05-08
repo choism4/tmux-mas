@@ -12,11 +12,14 @@ VERSION="$(cat "$ROOT/VERSION" 2>/dev/null || printf '0.0.0-dev')"
 
 usage() {
   cat <<'EOF'
-tmux-mas - run multi-agent CLI teams in tmux
+tmux-mas - tmux Multi Agents System
 
 Audience:
   This CLI is designed for agents and automation first. Output is plain text,
   commands are explicit, and scenario files are the source of truth.
+
+Name:
+  mas = Multi Agents System. tmux-mas runs agent CLI teams as tmux panes.
 
 Usage:
   tmux-mas run <scenario.yml|scenario-name>

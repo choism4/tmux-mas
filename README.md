@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg)](https://github.com/choism4/tmux-mas/actions/workflows/ci.yml)
 
-`tmux-mas` runs small multi-agent teams inside tmux.
+`tmux-mas` means **tmux Multi Agents System**.
+
+It runs small multi-agent teams inside tmux.
 
 It launches one agent CLI per tmux pane, injects run-local communication tools,
 and lets agents talk to each other with `agent_send` and `agent_broadcast`.
