@@ -1,0 +1,46 @@
+name: codex-claude-comic-codex
+session: codex-claude-comic-codex
+window: comic
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Create an English four-panel comic scenario explaining how Codex and Claude
+  are each useful in a cheerful, punchy, memorable way. The team should produce
+  a concise storyboard that can later be used as an image-generation prompt.
+agents:
+  - id: DIRECTOR
+    role: Owns the overall gag structure, panel rhythm, and final scenario.
+  - id: COPY
+    role: Writes short Korean dialogue, captions, and punchline candidates.
+  - id: VISUAL
+    role: Defines character poses, composition, props, and visual continuity.
+  - id: CRITIC
+    role: Removes bland explanations, checks that the comic is fun and clear,
+      and asks for one improvement pass if needed.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: codex-claude-four-panel-comic.md
+        Write the final four-panel comic scenario in English.
+kickoff:
+  agent: DIRECTOR
+  prompt: Ask COPY, VISUAL, and CRITIC for one strong direction each, then coordinate a final English four-panel comic scenario about when to use Codex and Claude.
+rules:
+  - Use English for team discussion and final output.
+  - The comic should feel cheerful, crisp, and satisfying without becoming noisy or childish.
+  - Codex should feel like the hands-on coding executor inside a repo.
+  - Claude should feel like the thoughtful planning, writing, and reasoning partner.
+  - Avoid brand fights, insults, or one model looking useless.
+  - Keep each panel readable with very short dialogue.
+  - The final artifact must include panel-by-panel scene, dialogue, caption, and image prompt notes.
+success:
+  - artifact/codex-claude-four-panel-comic.md exists.
+  - The four panels have a clear setup, contrast, twist, and punchline.
+  - The final scenario can be used directly for image generation.

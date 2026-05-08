@@ -64,6 +64,7 @@ Run deterministic tmux smoke scenarios:
 ```bash
 python3 tests/run_mock_scenarios.py
 python3 tests/run_public_scenarios_with_mock.py
+python3 tests/run_public_scenarios_with_mock.py --jobs 8
 ```
 
 ## Scenario Name Resolution

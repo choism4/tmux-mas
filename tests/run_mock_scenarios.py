@@ -4,6 +4,8 @@ from __future__ import annotations
 import subprocess
 import sys
 import time
+from argparse import ArgumentParser
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import yaml
@@ -45,6 +47,17 @@ def capture_session(session: str) -> str:
     return "\n".join(captures)
 
 
+def wait_for_markers(session: str, markers: list[str], timeout_seconds: float = 25.0) -> str:
+    deadline = time.monotonic() + timeout_seconds
+    last_capture = ""
+    while time.monotonic() < deadline:
+        last_capture = capture_session(session)
+        if all(marker in last_capture for marker in markers):
+            return last_capture
+        time.sleep(0.5)
+    return last_capture
+
+
 def check_scenario(name: str) -> None:
     session = scenario_session(name)
     kill_session(session)
@@ -53,7 +66,10 @@ def check_scenario(name: str) -> None:
         if f"Started tmux session: {session}" not in started.stdout:
             raise AssertionError(f"{name}: start output missing session name\n{started.stdout}")
 
-        time.sleep(6.0)
+        capture = wait_for_markers(
+            session,
+            ["MOCK_AGENT_READY", "MOCK_AGENT_SENT", "TMUX_MAS_AGENT_EXIT"],
+        )
         status = run(["./tmux-mas", "status", session], timeout=10).stdout
         if session not in status:
             raise AssertionError(f"{name}: status output missing session\n{status}")
@@ -62,7 +78,6 @@ def check_scenario(name: str) -> None:
         if session not in watch:
             raise AssertionError(f"{name}: watch output missing session\n{watch}")
 
-        capture = capture_session(session)
         if "MOCK_AGENT_READY" not in capture:
             raise AssertionError(f"{name}: mock agents did not start\n{capture}")
         if "MOCK_AGENT_SENT" not in capture:
@@ -76,9 +91,18 @@ def check_scenario(name: str) -> None:
         kill_session(session)
 
 
+def parse_args() -> int:
+    parser = ArgumentParser(description="Run fixture tmux-mas scenarios with the deterministic mock agent runner.")
+    parser.add_argument("--jobs", type=int, default=4, help="number of scenarios to run in parallel")
+    return max(parser.parse_args().jobs, 1)
+
+
 def main() -> int:
-    for name in MOCK_SCENARIOS:
-        check_scenario(name)
+    jobs = parse_args()
+    with ThreadPoolExecutor(max_workers=jobs) as executor:
+        futures = {executor.submit(check_scenario, name): name for name in MOCK_SCENARIOS}
+        for future in as_completed(futures):
+            future.result()
     return 0
 
 

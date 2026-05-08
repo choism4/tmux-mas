@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0ea5e9"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.4-f43f5e">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.5-f43f5e">
   <img alt="Requires tmux" src="https://img.shields.io/badge/requires-tmux-22c55e">
   <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
 </p>
@@ -97,6 +97,7 @@ Run the deterministic mock test suite:
 ```bash
 python3 tests/run_mock_scenarios.py
 python3 tests/run_public_scenarios_with_mock.py
+python3 tests/run_public_scenarios_with_mock.py --jobs 8
 ```
 
 ## The Core Idea
@@ -237,6 +238,7 @@ Not required:
 ## Docs
 
 - [Agent Operator Guide](docs/agent-operator-guide.md)
+- [Sample artifact: Codex + Claude comic scenario](docs/codex-claude-four-panel-comic.md)
 - [Example: Claude hello](scenarios/hello-claude.yml)
 - [Example: Codex hello](scenarios/hello-codex.yml)
 - [Example: Gemini hello](scenarios/hello-gemini.yml)
@@ -252,6 +254,7 @@ Not required:
   - [ops-runbook-codex](scenarios/ops-runbook-codex.yml)
   - [brand-system-studio-gemini](scenarios/brand-system-studio-gemini.yml)
   - [ux-research-synthesis-claude](scenarios/ux-research-synthesis-claude.yml)
+  - [codex-claude-comic-codex](scenarios/codex-claude-comic-codex.yml)
 - Mock scenarios live under `tests/fixtures/scenarios/` and are used only for deterministic CI.
 
 ## Release Checklist
@@ -265,7 +268,7 @@ python3 -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_se
 python3 tests/smoke_parse.py
 python3 tests/run_public_scenarios_with_mock.py
 python3 tests/run_mock_scenarios.py
-git tag v0.1.4
+git tag v0.1.5
 git push origin main --tags
 ```
 
