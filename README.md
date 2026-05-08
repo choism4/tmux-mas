@@ -18,6 +18,10 @@
   <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
 </p>
 
+<p align="center">
+  <img src="assets/comics/codex-claude-rivalry-moe-v3-panel2fix.png" alt="Claude Code, Codex, Gemini, and tmux-mas four-panel comic" width="860">
+</p>
+
 ---
 
 `tmux-mas` means **tmux Multi Agents System**.
