@@ -1,0 +1,52 @@
+name: codex-claude-rivalry-comic-codex
+session: codex-claude-rivalry-comic-codex
+window: comic
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Develop a funnier four-panel comic scenario from a user-provided premise:
+  Claude Code and Codex bicker because they think the other is copying them;
+  tmux-mas appears like a calm mediator; the final reveal shows a happy agent
+  team where Claude Code, Codex, and Gemini are already chatting over coffee.
+agents:
+  - id: DIRECTOR
+    role: Owns the four-panel structure, timing, camera angles, and final scenario.
+  - id: GAG
+    role: Improves the jokes, contrast, punchline, and readable dialogue.
+  - id: VISUAL
+    role: Owns composition, character acting, lighting, and image prompt detail.
+  - id: CRITIC
+    role: Cuts weak jokes, checks clarity, and keeps the tone playful rather than hostile.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: codex-claude-rivalry-four-panel-comic.md
+        Write the final four-panel comic scenario in English.
+kickoff:
+  agent: DIRECTOR
+  prompt: >
+    Ask GAG, VISUAL, and CRITIC for one improvement each, then produce the final
+    English four-panel comic scenario from this premise:
+    1. Claude Code and Codex are physically bickering. One says, "Are you copying me again?!" The other says, "When did I ever copy you?!"
+    2. tmux-mas appears and says, "Do not fight, children."
+    3. Shoulder shot from Claude Code and Codex looking at tmux-mas. They say, "What is that??" Light shines from tmux-mas.
+    4. Inside tmux-mas, an agent team is already assembled. Claude Code, Codex, and Gemini are happily drinking coffee and chatting.
+rules:
+  - Use English for team discussion and final output.
+  - Keep the user's four-panel structure intact.
+  - Make it funnier through timing, acting, contrast, and punchline, not long text.
+  - The fight must be slapstick and harmless, not mean or violent.
+  - tmux-mas should feel like a weirdly serene team room, not a brand mascot.
+  - Keep all image text short and readable.
+  - The final artifact must include panel scene, dialogue, caption, and image prompt notes.
+success:
+  - artifact/codex-claude-rivalry-four-panel-comic.md exists.
+  - The scenario is clearly funnier than the starting premise.
+  - The final scenario can be used directly for image generation.
