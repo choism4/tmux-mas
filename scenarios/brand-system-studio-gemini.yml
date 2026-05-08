@@ -1,0 +1,39 @@
+name: brand-system-studio-gemini
+session: brand-system-studio-gemini
+window: brand
+runner:
+  type: gemini
+  command: gemini --yolo
+  submit_key: C-m
+description: >
+  Create a compact visual identity kit for a developer CLI. The team should
+  produce positioning, palette, typography direction, README hero guidance, and
+  asset naming rules.
+agents:
+  - id: BRAND
+    role: Owns positioning and identity principles.
+  - id: VISUAL
+    role: Owns palette, layout, and image direction.
+  - id: DEVREL
+    role: Owns developer audience fit and README usefulness.
+  - id: CRITIC
+    role: Removes cringe, over-explanation, and off-brand jokes.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: brand-kit.md
+kickoff:
+  agent: BRAND
+  prompt: Ask VISUAL, DEVREL, and CRITIC for one brand constraint each.
+rules:
+  - Do not over-explain jokes.
+  - Keep the identity useful for GitHub.
+  - Produce brand-kit.md in the artifact workspace.
+success:
+  - artifact/brand-kit.md exists.
+  - Visual and copy guidance are included.

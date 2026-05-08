@@ -1,0 +1,39 @@
+name: ops-runbook-codex
+session: ops-runbook-codex
+window: runbook
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Build an operations runbook for monitoring and recovering multi-agent tmux
+  sessions. The team should cover startup checks, watch loops, stuck agents,
+  log capture, and cleanup.
+agents:
+  - id: OPS_LEAD
+    role: Owns runbook structure and final decisions.
+  - id: OBSERVER
+    role: Defines watch/status signals and escalation criteria.
+  - id: RECOVERY
+    role: Defines recovery and cleanup commands.
+  - id: AUDITOR
+    role: Checks that dangerous actions are explicit and reversible.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: runbook.md
+kickoff:
+  agent: OPS_LEAD
+  prompt: Ask each role for one runbook section and one failure mode.
+rules:
+  - Commands must be copy-pasteable.
+  - Separate observation from intervention.
+success:
+  - artifact/runbook.md exists.
+  - Recovery steps are explicit.
+  - Cleanup steps are included.

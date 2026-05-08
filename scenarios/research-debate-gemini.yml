@@ -1,0 +1,33 @@
+name: research-debate-gemini
+session: research-debate-gemini
+window: research
+runner:
+  type: gemini
+  command: gemini --yolo
+  submit_key: C-m
+description: >
+  Debate whether a project should use terminal-native orchestration or a web UI
+  for multi-agent coordination. The team must compare tradeoffs and choose.
+agents:
+  - id: MODERATOR
+    role: Moderates the debate and forces a decision.
+  - id: TERMINAL
+    role: Argues for terminal-native tmux orchestration.
+  - id: WEBUI
+    role: Argues for browser-based coordination and visualization.
+  - id: SKEPTIC
+    role: Challenges weak assumptions from both sides.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: MODERATOR
+  prompt: Ask each side for one strong argument and one risk.
+rules:
+  - No vague platform preferences.
+  - Compare operational tradeoffs.
+  - End with a concrete recommendation.
+success:
+  - Both approaches are compared.
+  - One recommendation is chosen.
+  - Main risk is named.

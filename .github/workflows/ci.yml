@@ -24,8 +24,10 @@ jobs:
           ./tmux-mas --version
           ./tmux-mas doctor
       - name: Check Python
-        run: python -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py
+        run: python -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py tests/run_public_scenarios_with_mock.py
       - name: Parse scenarios
         run: python tests/smoke_parse.py
+      - name: Run public scenarios with mock runner
+        run: python tests/run_public_scenarios_with_mock.py
       - name: Run mock scenarios
         run: python tests/run_mock_scenarios.py

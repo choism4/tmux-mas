@@ -1,0 +1,39 @@
+name: podcast-production-room-claude
+session: podcast-production-room-claude
+window: podcast
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Produce a 12-minute podcast episode package about terminal-native multi-agent
+  systems. The team should create the hook, rundown, host script, and clip plan.
+agents:
+  - id: PRODUCER
+    role: Owns episode angle, pacing, and final package.
+  - id: HOST
+    role: Writes host voice and transitions.
+  - id: RESEARCH
+    role: Adds concrete technical talking points without hype.
+  - id: EDITOR
+    role: Cuts repetition and creates clip titles.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected outputs: rundown.md, host-script.md, clips.md
+kickoff:
+  agent: PRODUCER
+  prompt: Ask HOST, RESEARCH, and EDITOR for one segment idea each, then produce the package.
+rules:
+  - Avoid generic AI hype.
+  - Make the hook specific.
+  - Produce files in the artifact workspace.
+success:
+  - artifact/rundown.md exists.
+  - artifact/host-script.md exists.
+  - artifact/clips.md exists.

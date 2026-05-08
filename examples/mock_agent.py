@@ -60,7 +60,7 @@ def main() -> int:
             send(target_pane, f"{agent_id}: hello {target_name}, mock message from {agent_id}")
             print(f"MOCK_AGENT_SENT {agent_id} {target_name}", flush=True)
 
-    deadline = time.monotonic() + 8.0
+    deadline = time.monotonic() + 4.0
     while time.monotonic() < deadline:
         readable, _, _ = select.select([sys.stdin], [], [], 0.5)
         if not readable:

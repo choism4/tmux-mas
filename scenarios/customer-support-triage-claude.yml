@@ -1,0 +1,33 @@
+name: customer-support-triage-claude
+session: customer-support-triage-claude
+window: support
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Triage a surge of support tickets after a desktop app update. The team must
+  group symptoms, identify urgent fixes, and draft customer-safe language.
+agents:
+  - id: SUPPORT
+    role: Summarizes customer pain and ticket clusters.
+  - id: ENGINEER
+    role: Maps symptoms to likely technical causes and fixes.
+  - id: PRODUCT
+    role: Prioritizes based on customer impact and release goals.
+  - id: COMMS
+    role: Drafts a short, accurate customer response.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: SUPPORT
+  prompt: Ask ENGINEER, PRODUCT, and COMMS for one triage input each.
+rules:
+  - Use customer-safe language.
+  - Avoid overpromising fixes.
+  - Prioritize urgent regressions.
+success:
+  - Ticket clusters are named.
+  - Priority fix is chosen.
+  - Customer response is drafted.

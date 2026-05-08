@@ -1,0 +1,33 @@
+name: docs-writing-codex
+session: docs-writing-codex
+window: docs
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Improve a confusing CLI README. The team must produce a clearer structure,
+  identify missing examples, and define acceptance criteria for agent readers.
+agents:
+  - id: EDITOR
+    role: Documentation editor. Owns structure, clarity, and final outline.
+  - id: NEWCOMER
+    role: First-time user. Calls out unclear setup and missing context.
+  - id: AUTOMATION
+    role: Automation agent. Checks whether commands are deterministic and scriptable.
+  - id: MAINTAINER
+    role: Maintainer. Keeps docs honest about limitations and support boundaries.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: EDITOR
+  prompt: Ask each role for one documentation gap and one concrete fix.
+rules:
+  - Prefer executable examples.
+  - Avoid marketing claims that are not backed by commands.
+  - Keep the final outline short.
+success:
+  - README outline is improved.
+  - Missing examples are listed.
+  - Agent-facing acceptance criteria are clear.

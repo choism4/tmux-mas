@@ -1,0 +1,33 @@
+name: release-readiness-codex
+session: release-readiness-codex
+window: release
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Prepare a CLI project for a public release. The team checks packaging,
+  installation, CI, examples, docs, and rollback readiness.
+agents:
+  - id: RELEASE
+    role: Release lead. Owns go/no-go and final checklist.
+  - id: PACKAGING
+    role: Packaging reviewer. Checks install path, versioning, and release artifacts.
+  - id: CI
+    role: CI reviewer. Checks tests, smoke coverage, and failure visibility.
+  - id: DOCS
+    role: Docs reviewer. Checks user-facing and agent-facing release notes.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: RELEASE
+  prompt: Ask PACKAGING, CI, and DOCS for one release blocker each.
+rules:
+  - Distinguish blockers from follow-ups.
+  - Every blocker needs an owner.
+  - Stop when go/no-go is clear.
+success:
+  - Go/no-go recommendation is made.
+  - Blockers and follow-ups are separated.
+  - Owners are assigned.

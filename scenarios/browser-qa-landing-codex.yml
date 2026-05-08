@@ -1,0 +1,39 @@
+name: browser-qa-landing-codex
+session: browser-qa-landing-codex
+window: browserqa
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Browser QA a static landing page. The team must inspect desktop/mobile
+  behavior, copy clarity, CTA affordance, and obvious visual regressions.
+agents:
+  - id: QA_LEAD
+    role: Coordinates QA scope and final acceptance.
+  - id: DESKTOP
+    role: Reviews desktop layout, hierarchy, and CTA visibility.
+  - id: MOBILE
+    role: Reviews mobile layout, overflow, and tap targets.
+  - id: COPY
+    role: Reviews wording, trust, and conversion clarity.
+tools:
+  - send
+  - broadcast
+  - browser
+resources:
+  - name: site
+    type: static-site
+    entry: index.html
+    seed: templates/signaldesk.html
+kickoff:
+  agent: QA_LEAD
+  prompt: Broadcast the site URL and ask each reviewer for one concrete acceptance check.
+rules:
+  - Use agent-browser if available before making visual claims.
+  - Keep findings reproducible.
+  - Separate blockers from polish.
+success:
+  - Desktop and mobile checks are named.
+  - CTA behavior is checked.
+  - Acceptance decision is clear.

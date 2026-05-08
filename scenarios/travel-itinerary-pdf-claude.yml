@@ -1,0 +1,41 @@
+name: travel-itinerary-pdf-claude
+session: travel-itinerary-pdf-claude
+window: travel
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Plan a four-day Tokyo food, design, and record-store trip and produce a
+  print-ready itinerary. The team should balance schedule realism, maps,
+  neighborhoods, budget, and rainy-day alternatives.
+agents:
+  - id: PLANNER
+    role: Owns day-by-day structure and pacing.
+  - id: LOCAL
+    role: Adds neighborhood realism, transit sanity, and timing constraints.
+  - id: DESIGNER
+    role: Turns the plan into a printable itinerary layout.
+  - id: EDITOR
+    role: Checks clarity, budget notes, and final handoff.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected outputs: itinerary.html and itinerary.md
+        Make itinerary.html print-ready so users can export it as PDF.
+kickoff:
+  agent: PLANNER
+  prompt: Ask LOCAL, DESIGNER, and EDITOR for one constraint each, then converge on the itinerary artifact.
+rules:
+  - Produce files in the artifact workspace.
+  - Keep travel timing realistic.
+  - Include rainy-day alternatives.
+success:
+  - artifact/itinerary.html exists.
+  - artifact/itinerary.md exists.
+  - The itinerary is print-ready.

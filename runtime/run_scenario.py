@@ -182,6 +182,14 @@ def prepare_static_site(resource: dict, run_dir: Path) -> tuple[str, str]:
     return str(site_dir), url
 
 
+def prepare_workspace(resource: dict, run_dir: Path) -> str:
+    workspace_dir = run_dir / resource.get("name", "workspace")
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    for relative_path, content in (resource.get("files") or {}).items():
+        write(workspace_dir / str(relative_path), str(content))
+    return str(workspace_dir)
+
+
 def wait_url(url: str, attempts: int = 30) -> bool:
     import urllib.request
 
@@ -248,7 +256,14 @@ def resolve_runner(scenario: dict) -> dict[str, str]:
     return runner
 
 
-def render_start_script(*, runner: dict[str, str], agent_bin: Path, prompt_file: Path, screenshot_dir: Path) -> str:
+def render_start_script(
+    *,
+    runner: dict[str, str],
+    agent_id: str,
+    agent_bin: Path,
+    prompt_file: Path,
+    screenshot_dir: Path,
+) -> str:
     cwd = shell_quote(runner["cwd"])
     prompt = shell_quote(str(prompt_file))
     command = runner["command"]
@@ -257,10 +272,15 @@ def render_start_script(*, runner: dict[str, str], agent_bin: Path, prompt_file:
 set -euo pipefail
 export PATH={shell_quote(str(agent_bin))}:"$PATH"
 export TMUX_MAS_ROOT={shell_quote(str(ROOT))}
+export TMUX_MAS_AGENT_ID={shell_quote(agent_id)}
 export AGENT_BROWSER_SCREENSHOT_DIR={shell_quote(str(screenshot_dir))}
 mkdir -p "$AGENT_BROWSER_SCREENSHOT_DIR"
 cd {cwd}
-exec {command} "$(cat {prompt})"
+set +e
+{command} "$(cat {prompt})"
+status=$?
+printf '\\nTMUX_MAS_AGENT_EXIT agent=%s status=%s\\n' "$TMUX_MAS_AGENT_ID" "$status"
+exit "$status"
 """
 
 
@@ -296,6 +316,12 @@ def main() -> None:
                 "entry": resource.get("entry", "index.html"),
                 "url": url,
             }
+        elif resource.get("type") == "workspace":
+            workspace_dir = prepare_workspace(resource, run_dir)
+            resources[resource.get("name", "workspace")] = {
+                "type": "workspace",
+                "workspace_dir": workspace_dir,
+            }
 
     run(["tmux", "new-session", "-d", "-s", session, "-n", window, "bash --noprofile --norc"])
 
@@ -307,6 +333,7 @@ def main() -> None:
                 raise SystemExit(f"HTTP server failed to start: {resource['url']}")
 
     run(["tmux", "select-window", "-t", f"{session}:{window}"])
+    run(["tmux", "set-option", "-t", f"{session}:{window}", "remain-on-exit", "on"])
     run(["tmux", "set-option", "-t", f"{session}:{window}", "pane-border-status", "top"])
     run(["tmux", "set-option", "-t", f"{session}:{window}", "pane-border-format", " #{pane_index} #{@agent_name} #{pane_id} "])
 
@@ -364,6 +391,7 @@ def main() -> None:
             start_file,
             render_start_script(
                 runner=runner,
+                agent_id=agent_id,
                 agent_bin=agent_bin,
                 prompt_file=prompt_file,
                 screenshot_dir=run_dir / "screenshots" / agent_id,

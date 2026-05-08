@@ -1,0 +1,33 @@
+name: product-strategy-claude
+session: product-strategy-claude
+window: strategy
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Decide whether a developer tool should prioritize onboarding, reliability,
+  or collaboration features for the next release.
+agents:
+  - id: PM
+    role: Product manager. Frames the decision and chooses a recommendation.
+  - id: USER
+    role: User advocate. Represents painful first-run and daily workflow friction.
+  - id: ENG
+    role: Engineering lead. Represents implementation complexity and maintenance risk.
+  - id: GTM
+    role: Go-to-market lead. Represents positioning, launch clarity, and adoption signals.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: PM
+  prompt: Ask USER, ENG, and GTM for one argument each, then converge on one priority.
+rules:
+  - Make tradeoffs explicit.
+  - Do not optimize for every audience at once.
+  - Keep final recommendation crisp.
+success:
+  - One release priority is selected.
+  - Main tradeoff is documented.
+  - Follow-up owner is clear.

@@ -28,6 +28,7 @@ class PaneSnapshot:
     agent: str
     command: str
     dead: bool
+    exit_status: str
     digest: str
     tail: str
 
@@ -67,7 +68,7 @@ def capture_tail(pane_id: str, lines: int) -> str:
 def snapshot_panes(session: str, lines: int) -> list[PaneSnapshot]:
     snapshots: list[PaneSnapshot] = []
     for target, pane_id, agent, command, dead in list_panes(session):
-        tail = "" if dead else capture_tail(pane_id, lines)
+        tail = capture_tail(pane_id, lines)
         digest = hashlib.sha256(tail.encode("utf-8", errors="replace")).hexdigest()
         snapshots.append(
             PaneSnapshot(
@@ -76,11 +77,20 @@ def snapshot_panes(session: str, lines: int) -> list[PaneSnapshot]:
                 agent=agent,
                 command=command,
                 dead=dead,
+                exit_status=extract_exit_status(tail),
                 digest=digest,
                 tail=last_non_empty_line(tail),
             ),
         )
     return snapshots
+
+
+def extract_exit_status(text: str) -> str:
+    marker = "TMUX_MAS_AGENT_EXIT "
+    for line in reversed(text.splitlines()):
+        if marker in line:
+            return line.split(marker, 1)[1].strip()
+    return "-"
 
 
 def last_non_empty_line(text: str) -> str:
@@ -101,7 +111,7 @@ def print_snapshot(
     for snapshot in snapshots:
         state = states.get(snapshot.pane_id)
         if snapshot.dead:
-            status = "dead"
+            status = "exited" if snapshot.exit_status != "-" else "dead"
         elif state is None:
             status = "new"
         elif state.digest != snapshot.digest:
@@ -116,7 +126,7 @@ def print_snapshot(
             tail = f"{tail[:137]}..."
         print(
             f"{status:>10} {snapshot.target:<28} {snapshot.pane_id:<6} "
-            f"{snapshot.agent:<16} {snapshot.command:<12} {tail}"
+            f"{snapshot.agent:<16} {snapshot.command:<12} {snapshot.exit_status:<28} {tail}"
         )
     print("", flush=True)
 
@@ -139,7 +149,7 @@ def update_states(
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Watch a tmux-mas session for pane output changes, idle panes, and dead panes.",
+        description="Watch a tmux-mas session for pane output changes, idle agents, and exited agent processes.",
     )
     parser.add_argument("session", help="tmux session to watch")
     parser.add_argument("--interval", type=float, default=5.0, help="poll interval in seconds")

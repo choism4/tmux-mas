@@ -1,0 +1,40 @@
+name: workshop-curriculum-claude
+session: workshop-curriculum-claude
+window: workshop
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Design a 90-minute workshop teaching engineers how to operate terminal-native
+  agent teams safely. The team should produce agenda, exercises, instructor
+  notes, and assessment criteria.
+agents:
+  - id: INSTRUCTOR
+    role: Owns learning goals and pacing.
+  - id: EXERCISE
+    role: Creates hands-on exercises.
+  - id: SAFETY
+    role: Adds operational safety and failure handling.
+  - id: STUDENT
+    role: Flags confusing parts from a learner perspective.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected outputs: agenda.md, exercises.md, instructor-notes.md
+kickoff:
+  agent: INSTRUCTOR
+  prompt: Ask each role for one workshop requirement, then produce the curriculum files.
+rules:
+  - Include timings.
+  - Include at least two exercises.
+  - Include safety notes.
+success:
+  - artifact/agenda.md exists.
+  - artifact/exercises.md exists.
+  - artifact/instructor-notes.md exists.

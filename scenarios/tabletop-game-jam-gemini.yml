@@ -1,0 +1,39 @@
+name: tabletop-game-jam-gemini
+session: tabletop-game-jam-gemini
+window: gamejam
+runner:
+  type: gemini
+  command: gemini --yolo
+  submit_key: C-m
+description: >
+  Design a 20-minute tabletop microgame about agents coordinating through
+  unreliable terminals. The team should create rules, components, examples,
+  and a mini playtest report.
+agents:
+  - id: DESIGN_LEAD
+    role: Owns core loop, tension, and final rules.
+  - id: MECHANICS
+    role: Designs actions, turn structure, scoring, and failure states.
+  - id: PLAYTEST
+    role: Runs a lightweight simulated playtest and reports confusing rules.
+  - id: WRITER
+    role: Writes player-facing rules and examples.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: game.md
+        Include components, setup, turn structure, scoring, and playtest notes.
+kickoff:
+  agent: DESIGN_LEAD
+  prompt: Ask each role for one mechanic or risk, then create the final rules artifact.
+rules:
+  - The game must be playable with paper and six tokens.
+  - Keep rules concise but complete.
+success:
+  - artifact/game.md exists.
+  - A simulated playtest note is included.

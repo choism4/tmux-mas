@@ -10,6 +10,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+FIXTURE_DIR = ROOT / "tests" / "fixtures" / "scenarios"
 MOCK_SCENARIOS = [
     "mock-handshake",
     "mock-standup",
@@ -27,7 +28,7 @@ def run(args: list[str], *, check: bool = True, timeout: int = 30) -> subprocess
 
 
 def scenario_session(name: str) -> str:
-    with (ROOT / "scenarios" / f"{name}.yml").open("r", encoding="utf-8") as f:
+    with (FIXTURE_DIR / f"{name}.yml").open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return str(data["session"])
 
@@ -48,11 +49,11 @@ def check_scenario(name: str) -> None:
     session = scenario_session(name)
     kill_session(session)
     try:
-        started = run(["./tmux-mas", "run", name], timeout=20)
+        started = run(["./tmux-mas", "run", str(FIXTURE_DIR / f"{name}.yml")], timeout=20)
         if f"Started tmux session: {session}" not in started.stdout:
             raise AssertionError(f"{name}: start output missing session name\n{started.stdout}")
 
-        time.sleep(3.0)
+        time.sleep(6.0)
         status = run(["./tmux-mas", "status", session], timeout=10).stdout
         if session not in status:
             raise AssertionError(f"{name}: status output missing session\n{status}")
@@ -66,6 +67,10 @@ def check_scenario(name: str) -> None:
             raise AssertionError(f"{name}: mock agents did not start\n{capture}")
         if "MOCK_AGENT_SENT" not in capture:
             raise AssertionError(f"{name}: starter did not send\n{capture}")
+        if "TMUX_MAS_AGENT_EXIT" not in capture:
+            raise AssertionError(f"{name}: agent exit marker missing\n{capture}")
+        if "exited" not in watch:
+            raise AssertionError(f"{name}: watch did not report exited panes\n{watch}")
         print(f"ok {name}")
     finally:
         kill_session(session)

@@ -1,0 +1,33 @@
+name: data-quality-gemini
+session: data-quality-gemini
+window: data
+runner:
+  type: gemini
+  command: gemini --yolo
+  submit_key: C-m
+description: >
+  Investigate a metrics dashboard where conversion rate jumped unexpectedly.
+  The team must separate real product movement from data pipeline issues.
+agents:
+  - id: ANALYST
+    role: Frames the metric anomaly and expected segmentation.
+  - id: PIPELINE
+    role: Checks ingestion, joins, deduplication, and backfills.
+  - id: PRODUCT
+    role: Checks launches, experiments, and user behavior changes.
+  - id: DECIDER
+    role: Decides whether the metric is trustworthy enough to report.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: ANALYST
+  prompt: Ask PIPELINE and PRODUCT for one plausible explanation each, then ask DECIDER for reporting criteria.
+rules:
+  - Separate data bugs from behavior changes.
+  - Avoid declaring victory without validation.
+  - Keep checks concrete.
+success:
+  - Trust level is stated.
+  - Validation checks are listed.
+  - Reporting decision is clear.

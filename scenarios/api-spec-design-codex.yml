@@ -1,0 +1,39 @@
+name: api-spec-design-codex
+session: api-spec-design-codex
+window: apispec
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Design a small HTTP API for launching, listing, watching, and stopping
+  multi-agent tmux sessions. The team should produce an OpenAPI-style draft and
+  client examples.
+agents:
+  - id: API_LEAD
+    role: Owns resource model and final API shape.
+  - id: CLIENT
+    role: Represents SDK and automation client ergonomics.
+  - id: SERVER
+    role: Represents implementation constraints and error handling.
+  - id: REVIEWER
+    role: Finds ambiguity, missing status fields, and unsafe defaults.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected outputs: openapi.yaml and client-examples.md
+kickoff:
+  agent: API_LEAD
+  prompt: Ask each role for one API requirement and one failure mode.
+rules:
+  - Keep the API minimal.
+  - Include error responses.
+  - Produce files in the artifact workspace.
+success:
+  - artifact/openapi.yaml exists.
+  - artifact/client-examples.md exists.

@@ -1,0 +1,33 @@
+name: incident-response-claude
+session: incident-response-claude
+window: incident
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  A production checkout flow is timing out. The team must triage impact,
+  isolate likely causes, communicate status, and decide rollback criteria.
+agents:
+  - id: IC
+    role: Incident commander. Owns scope, timeline, decisions, and final next action.
+  - id: OPS
+    role: Operations engineer. Owns deploy health, infrastructure signals, and rollback mechanics.
+  - id: APP
+    role: Application engineer. Owns service behavior, logs, errors, and recent code changes.
+  - id: COMMS
+    role: Customer communications lead. Owns short external and internal status updates.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: IC
+  prompt: Broadcast the incident summary and ask OPS, APP, and COMMS for one concrete signal each.
+rules:
+  - Keep messages short and operational.
+  - Prefer evidence, owner, and next action.
+  - Receiving a message does not require a response unless your role has useful input.
+success:
+  - Impact is summarized.
+  - At least one mitigation path is chosen.
+  - Communication owner has a status update.

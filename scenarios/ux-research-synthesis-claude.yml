@@ -1,0 +1,44 @@
+name: ux-research-synthesis-claude
+session: ux-research-synthesis-claude
+window: uxresearch
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+description: >
+  Synthesize fictional user interview notes for a terminal agent orchestration
+  tool. The team should produce themes, opportunity areas, and product
+  recommendations without pretending the data is real.
+agents:
+  - id: RESEARCHER
+    role: Owns synthesis method and caveats.
+  - id: PM
+    role: Converts themes into product opportunities.
+  - id: DESIGN
+    role: Converts insights into workflow and interface implications.
+  - id: SKEPTIC
+    role: Challenges weak evidence and overconfident conclusions.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      interview-notes.md: |
+        Fictional notes:
+        - Users like visibility into each agent pane.
+        - Users dislike unclear stopping conditions.
+        - Users want examples that produce real artifacts.
+        - Users fear hidden automation doing destructive work.
+      README.md: |
+        Expected output: synthesis.md
+kickoff:
+  agent: RESEARCHER
+  prompt: Ask each role for one interpretation, then produce synthesis.md with caveats.
+rules:
+  - State that notes are fictional.
+  - Separate evidence from recommendation.
+success:
+  - artifact/synthesis.md exists.
+  - Themes, opportunities, and caveats are included.

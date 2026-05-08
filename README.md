@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0ea5e9"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.3-f43f5e">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.4-f43f5e">
   <img alt="Requires tmux" src="https://img.shields.io/badge/requires-tmux-22c55e">
   <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
 </p>
@@ -96,6 +96,7 @@ Run the deterministic mock test suite:
 
 ```bash
 python3 tests/run_mock_scenarios.py
+python3 tests/run_public_scenarios_with_mock.py
 ```
 
 ## The Core Idea
@@ -209,7 +210,7 @@ tmux-mas stop <session>
 ```
 
 `watch` is the operator awareness loop. It polls pane output and reports
-`changed`, `quiet`, `idle`, and `dead` panes:
+`changed`, `quiet`, `idle`, and `agent-exited` states:
 
 ```bash
 tmux-mas watch hello-claude --idle-seconds 120
@@ -240,15 +241,18 @@ Not required:
 - [Example: Codex hello](scenarios/hello-codex.yml)
 - [Example: Gemini hello](scenarios/hello-gemini.yml)
 - [Example: landing page team](scenarios/landing-page.yml)
-- Mock scenarios:
-  - [mock-handshake](scenarios/mock-handshake.yml)
-  - [mock-standup](scenarios/mock-standup.yml)
-  - [mock-incident-response](scenarios/mock-incident-response.yml)
-  - [mock-design-review](scenarios/mock-design-review.yml)
-  - [mock-product-trio](scenarios/mock-product-trio.yml)
-  - [mock-security-review](scenarios/mock-security-review.yml)
-  - [mock-writing-room](scenarios/mock-writing-room.yml)
-  - [mock-quiet-room](scenarios/mock-quiet-room.yml)
+- Artifact-oriented examples:
+  - [generative-art-studio-codex](scenarios/generative-art-studio-codex.yml)
+  - [travel-itinerary-pdf-claude](scenarios/travel-itinerary-pdf-claude.yml)
+  - [tabletop-game-jam-gemini](scenarios/tabletop-game-jam-gemini.yml)
+  - [podcast-production-room-claude](scenarios/podcast-production-room-claude.yml)
+  - [newsletter-briefing-codex](scenarios/newsletter-briefing-codex.yml)
+  - [api-spec-design-codex](scenarios/api-spec-design-codex.yml)
+  - [workshop-curriculum-claude](scenarios/workshop-curriculum-claude.yml)
+  - [ops-runbook-codex](scenarios/ops-runbook-codex.yml)
+  - [brand-system-studio-gemini](scenarios/brand-system-studio-gemini.yml)
+  - [ux-research-synthesis-claude](scenarios/ux-research-synthesis-claude.yml)
+- Mock scenarios live under `tests/fixtures/scenarios/` and are used only for deterministic CI.
 
 ## Release Checklist
 
@@ -257,10 +261,11 @@ bash -n tmux-mas install.sh
 ./tmux-mas --help
 ./tmux-mas --version
 ./tmux-mas doctor
-python3 -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py
+python3 -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py tests/run_public_scenarios_with_mock.py
 python3 tests/smoke_parse.py
+python3 tests/run_public_scenarios_with_mock.py
 python3 tests/run_mock_scenarios.py
-git tag v0.1.3
+git tag v0.1.4
 git push origin main --tags
 ```
 

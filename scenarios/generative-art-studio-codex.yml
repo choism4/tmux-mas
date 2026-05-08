@@ -1,0 +1,41 @@
+name: generative-art-studio-codex
+session: generative-art-studio-codex
+window: art
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Create an iterative generative-art gallery as a single self-contained HTML
+  file. The team should produce multiple visual directions, choose one, and
+  refine it into a polished artifact.
+agents:
+  - id: CURATOR
+    role: Chooses the visual direction and keeps the artifact coherent.
+  - id: ARTIST
+    role: Designs the generative visual system, motion, palette, and composition.
+  - id: ENGINEER
+    role: Implements the final HTML/CSS/canvas artifact in the workspace.
+  - id: CRITIC
+    role: Reviews visual quality and asks for one improvement pass.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: gallery.html
+        Create a polished browser-openable generative-art piece.
+kickoff:
+  agent: CURATOR
+  prompt: Ask ARTIST for two concepts, ENGINEER for implementation plan, and CRITIC for acceptance criteria.
+rules:
+  - Produce a real artifact in the workspace.
+  - ENGINEER owns writing gallery.html.
+  - Prefer one excellent direction over many unfinished sketches.
+success:
+  - artifact/gallery.html exists.
+  - The chosen art direction is documented.
+  - CRITIC signs off or lists the final blocker.

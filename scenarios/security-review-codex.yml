@@ -1,0 +1,33 @@
+name: security-review-codex
+session: security-review-codex
+window: security
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Review a proposed OAuth integration before launch. The team must identify
+  practical abuse paths, data exposure risks, and release-blocking checks.
+agents:
+  - id: LEAD
+    role: Review lead. Keeps findings concrete and decides what blocks release.
+  - id: APPSEC
+    role: Application security reviewer. Focuses on auth flow, callback handling, tokens, and abuse cases.
+  - id: PRIVACY
+    role: Privacy reviewer. Focuses on scopes, retention, consent, and data minimization.
+  - id: QA
+    role: QA reviewer. Converts findings into regression and acceptance tests.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: LEAD
+  prompt: Ask each reviewer for one release-blocking risk and one verification step.
+rules:
+  - Findings first.
+  - Avoid generic security advice.
+  - If a role has no blocker, say so briefly.
+success:
+  - Release blockers are listed.
+  - Verification steps are owned.
+  - Non-blocking risks are separated from blockers.

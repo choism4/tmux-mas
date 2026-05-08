@@ -60,7 +60,7 @@ Commands:
         <session>:<window>.<pane-index> <pane-id> <agent-id> <command>
 
   watch <session>
-      Poll pane output and print changed, quiet, idle, and dead panes.
+      Poll pane output and print changed, quiet, idle, dead, and exited panes.
       This is the operator awareness loop; use --once for a single snapshot.
 
   attach <session>

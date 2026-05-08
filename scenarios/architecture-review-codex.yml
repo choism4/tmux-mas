@@ -1,0 +1,34 @@
+name: architecture-review-codex
+session: architecture-review-codex
+window: architecture
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Review whether a CLI should remain a bash/Python hybrid or move to a packaged
+  single-language implementation. The team must decide based on maintainability,
+  portability, and user installation friction.
+agents:
+  - id: ARCH
+    role: Architecture lead. Frames the decision and closes with a recommendation.
+  - id: PYTHON
+    role: Argues for Python-centered implementation and packaging.
+  - id: SHELL
+    role: Argues for keeping the shell wrapper simple and transparent.
+  - id: USER
+    role: Represents install and debugging friction for users and agents.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: ARCH
+  prompt: Ask PYTHON, SHELL, and USER for one tradeoff each.
+rules:
+  - Prefer maintainability over novelty.
+  - Name migration cost.
+  - End with a decision.
+success:
+  - Architecture recommendation is made.
+  - Migration cost is named.
+  - User impact is included.

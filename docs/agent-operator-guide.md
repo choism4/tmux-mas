@@ -63,6 +63,7 @@ Run deterministic tmux smoke scenarios:
 
 ```bash
 python3 tests/run_mock_scenarios.py
+python3 tests/run_public_scenarios_with_mock.py
 ```
 
 ## Scenario Name Resolution
@@ -267,7 +268,9 @@ Fields:
 
 ## Watch Output
 
-`tmux-mas watch <session>` polls pane tails and prints one row per pane:
+`tmux-mas watch <session>` polls pane tails and prints one row per pane. When an
+agent CLI exits, tmux-mas leaves a `TMUX_MAS_AGENT_EXIT` marker in the pane and
+`watch` reports the pane as `exited`.
 
 ```text
 == 2026-05-08T10:32:00+00:00 ==
@@ -282,7 +285,8 @@ Statuses:
 - `changed`: captured pane tail changed since the previous poll
 - `quiet`: unchanged, but below the idle threshold
 - `idle>Ns`: unchanged for at least the configured idle threshold
-- `dead`: tmux reports the pane as dead
+- `exited`: the agent process exited and left a `TMUX_MAS_AGENT_EXIT` marker
+- `dead`: tmux reports a closed process without a tmux-mas exit marker; treat this as an abnormal diagnostic state
 
 Use `--once` when another orchestrator process wants to sample state without
 holding the terminal.

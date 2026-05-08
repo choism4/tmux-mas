@@ -1,0 +1,38 @@
+name: newsletter-briefing-codex
+session: newsletter-briefing-codex
+window: newsletter
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: >
+  Create a developer newsletter issue explaining a new open-source CLI release.
+  The team should write a subject line, intro, technical section, examples, and
+  release notes.
+agents:
+  - id: EDITOR
+    role: Owns issue structure and final copy.
+  - id: TECH
+    role: Explains concrete commands and architecture.
+  - id: GROWTH
+    role: Improves subject line, CTA, and reader motivation.
+  - id: QA
+    role: Checks claims, commands, and missing caveats.
+tools:
+  - send
+  - broadcast
+resources:
+  - name: artifact
+    type: workspace
+    files:
+      README.md: |
+        Expected output: newsletter.md
+kickoff:
+  agent: EDITOR
+  prompt: Ask each role for one section requirement, then create newsletter.md.
+rules:
+  - Include command examples.
+  - Avoid unsupported claims.
+success:
+  - artifact/newsletter.md exists.
+  - Subject line and CTA are included.
