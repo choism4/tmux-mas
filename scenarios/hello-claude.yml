@@ -1,0 +1,36 @@
+name: hello-claude
+session: hello-claude
+window: team
+runner:
+  type: claude
+  command: claude --dangerously-skip-permissions
+  submit_key: Enter
+
+description: >
+  Two agents verify that tmux-mas can run Claude Code panes and exchange one
+  short message through tmux send-keys wrappers.
+
+agents:
+  - id: HOST
+    role: Starts the exchange, asks one concise question, and closes after one reply.
+  - id: GUEST
+    role: Replies once with a concise answer, then stops.
+
+tools:
+  - send
+  - broadcast
+
+kickoff:
+  agent: HOST
+  prompt: >
+    Send GUEST one short greeting and ask whether the tmux message reached them.
+
+rules:
+  - Keep messages short.
+  - Receiving a message does not require a response unless your role has useful input.
+  - Stop after the first complete exchange.
+
+success:
+  - HOST sends one message to GUEST.
+  - GUEST sends one reply to HOST.
+  - Both agents stop naturally.

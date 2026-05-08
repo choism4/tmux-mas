@@ -1,0 +1,58 @@
+name: landing-page-team
+session: landing-page-team-yml
+window: landing
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+
+description: >
+  Build and improve a SaaS landing page for SignalDesk, a product that turns
+  support noise into product priorities. The goal is a premium B2B SaaS
+  above-the-fold page with clear value, strong CTA, trust signals, and
+  responsive behavior.
+
+agents:
+  - id: LEAD
+    role: Project owner. Drive scope, decide tradeoffs, ask for focused input, and close with next actions.
+  - id: DESIGNER
+    role: Landing page designer. Owns conversion critique, visual direction, hierarchy, CTA, trust, and mobile polish.
+  - id: DEVELOPER
+    role: Frontend developer. Edits the landing page when LEAD asks, keeping implementation simple and shippable.
+  - id: QA
+    role: Browser QA reviewer. Uses browser checks, screenshots, accessibility snapshots, and concrete acceptance criteria.
+
+tools:
+  - send
+  - broadcast
+  - browser
+
+resources:
+  - name: site
+    type: static-site
+    entry: index.html
+    seed: templates/signaldesk.html
+
+kickoff:
+  agent: LEAD
+  prompt: >
+    Start by broadcasting the goal. Ask DESIGNER for critique, DEVELOPER for
+    implementation plan, and QA for acceptance checks. Push for a premium B2B
+    SaaS result, not a bland card layout.
+
+rules:
+  - Keep team messages short and concrete.
+  - Receiving a message does not require a response unless your role has useful input.
+  - LEAD starts by broadcasting the goal, then asks DESIGNER, DEVELOPER, and QA for focused input.
+  - DESIGNER and QA should use agent-browser before making strong claims.
+  - DEVELOPER should implement only after LEAD asks for changes.
+  - DEVELOPER may edit the shared static-site files.
+  - Avoid unrelated repo inspection and web research.
+  - Prefer a premium B2B SaaS first screen with strong visual impact, product value, trust, and CTA.
+  - When the work is complete, close naturally with a brief handoff or goodbye.
+
+success:
+  - Improved landing page exists in the shared static site.
+  - Desktop and mobile browser checks pass.
+  - CTA links work.
+  - Team reaches a natural stopping point.

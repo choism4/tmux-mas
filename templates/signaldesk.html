@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SignalDesk</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #17202a;
+        background: #f7f9fb;
+      }
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 56px 24px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 48px;
+        align-items: center;
+        min-height: 78vh;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(42px, 7vw, 82px);
+        line-height: 0.95;
+      }
+      p {
+        font-size: 20px;
+        line-height: 1.55;
+        color: #4b5b68;
+      }
+      .actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+      .button {
+        border: 0;
+        border-radius: 8px;
+        padding: 14px 20px;
+        font-weight: 700;
+        font-size: 16px;
+      }
+      .primary {
+        background: #0f766e;
+        color: white;
+      }
+      .secondary {
+        background: #e8eef2;
+        color: #17202a;
+      }
+      .panel {
+        background: white;
+        border: 1px solid #d9e2e8;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 24px 80px rgba(23, 32, 42, 0.12);
+      }
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #edf2f5;
+      }
+      .metric:last-child {
+        border-bottom: 0;
+      }
+      @media (max-width: 760px) {
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div>
+          <p>SignalDesk</p>
+          <h1>Turn support noise into product priorities.</h1>
+          <p>SignalDesk groups tickets, calls, and product feedback into ranked opportunities your team can act on before churn shows up.</p>
+          <div class="actions">
+            <button class="button primary">Start Free Trial</button>
+            <button class="button secondary">Watch Demo</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="metric"><strong>Churn risk</strong><span>Down 18%</span></div>
+          <div class="metric"><strong>Duplicate reports</strong><span>Grouped 423</span></div>
+          <div class="metric"><strong>Top theme</strong><span>Billing confusion</span></div>
+          <div class="metric"><strong>Next action</strong><span>Fix invoice copy</span></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

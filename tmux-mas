@@ -1,0 +1,202 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+ROOT="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+
+usage() {
+  cat <<'EOF'
+tmux-mas - run multi-agent CLI teams in tmux
+
+Audience:
+  This CLI is designed for agents and automation first. Output is plain text,
+  commands are explicit, and scenario files are the source of truth.
+
+Usage:
+  tmux-mas run <scenario.yml|scenario-name>
+  tmux-mas list
+  tmux-mas status [session]
+  tmux-mas attach <session>
+  tmux-mas stop <session>
+  tmux-mas help
+
+Commands:
+  run <scenario>
+      Start a tmux session from a YAML scenario.
+
+      Scenario resolution order:
+        1. exact file path passed by caller
+        2. scenarios/<name>
+        3. scenarios/<name>.yml
+        4. scenarios/<name>.yaml
+
+      Examples:
+        tmux-mas run hello-claude
+        tmux-mas run scenarios/landing-page.yml
+        tmux-mas run /abs/path/team.yml
+
+  list
+      Print available bundled scenarios, one absolute path per line.
+
+  status [session]
+      Without a session, print tmux sessions.
+      With a session, print panes in this stable format:
+        <session>:<window>.<pane-index> <pane-id> <agent-id> <command>
+
+  attach <session>
+      Attach to the tmux session.
+
+  stop <session>
+      Kill the tmux session.
+
+Scenario Contract:
+  Required YAML keys:
+    name: human-readable scenario name
+    session: tmux session name
+    agents: list of { id, role }
+
+  Common YAML keys:
+    window: tmux team window name, defaults to "team"
+    runner: agent CLI preset or explicit runner object
+    tools: send, broadcast, browser
+    resources: static-site resources
+    kickoff: { agent, prompt }
+    rules: list of team rules injected into every prompt
+    success: list of stopping criteria injected into every prompt
+
+Runner Contract:
+  runner may be a preset:
+    runner: codex
+    runner: claude
+    runner: gemini
+
+  Public scenarios should prefer explicit runner objects:
+    runner:
+      type: custom
+      command: my-agent --flag
+      submit_key: C-m
+
+  tmux-mas appends the rendered prompt as the final shell argument:
+    exec <runner.command> "$(cat <prompt-file>)"
+
+  submit_key is the tmux key sent after message text by agent_send and
+  agent_broadcast. Defaults are runner-specific. Codex commonly uses C-m.
+  Current Claude Code TUI builds may need Enter.
+
+Injected Agent Tools:
+  Every agent pane receives a run-local PATH containing:
+    agent_send <target-pane> "<AGENT_ID>: <message>"
+    agent_broadcast "<AGENT_ID>: <message>"
+
+  Browser scenarios also receive agent-browser when installed:
+    agent-browser open <url>
+
+  Agents should not call tmux directly. They should communicate only through
+  agent_send and agent_broadcast.
+
+Environment:
+  TMUX_MAS_RUNNER
+      Override scenario runner preset/type for one launch.
+
+  TMUX_MAS_RUNNER_COMMAND
+      Override runner.command for one launch.
+
+  TMUX_MAS_CWD
+      Working directory used when launching agent CLIs. Defaults to $HOME.
+
+  TMUX_MAS_SEND_DELAY
+      Delay between inserting message text and sending submit key. Default: 0.3
+
+  TMUX_MAS_BROADCAST_DELAY
+      Delay between broadcast recipients. Default: 0.8
+
+  TMUX_MAS_SUBMIT_KEY
+      Override submit key inside a running agent tool environment.
+
+Exit Codes:
+  0  command completed
+  1  invalid usage, missing scenario, missing dependency, or tmux failure
+
+Files:
+  runs/<session>-<timestamp>/metadata.txt
+  runs/<session>-<timestamp>/prompts/<agent>.prompt
+  runs/<session>-<timestamp>/tools/<agent>/agent_send
+  runs/<session>-<timestamp>/tools/<agent>/agent_broadcast
+EOF
+}
+
+resolve_scenario() {
+  local input="$1"
+  local candidate
+
+  if [[ -f "$input" ]]; then
+    printf '%s\n' "$input"
+    return 0
+  fi
+
+  for candidate in \
+    "$ROOT/scenarios/$input" \
+    "$ROOT/scenarios/$input.yml" \
+    "$ROOT/scenarios/$input.yaml"; do
+    if [[ -f "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  echo "Scenario not found: $input" >&2
+  echo "Run './tmux-mas list' to see available scenarios." >&2
+  return 1
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  run)
+    if [[ $# -ne 2 ]]; then
+      usage >&2
+      exit 1
+    fi
+    scenario="$(resolve_scenario "$2")"
+    exec python3 "$ROOT/runtime/run_scenario.py" "$scenario"
+    ;;
+  list)
+    find "$ROOT/scenarios" -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) -print | sort
+    ;;
+  stop)
+    if [[ $# -ne 2 ]]; then
+      usage >&2
+      exit 1
+    fi
+    tmux kill-session -t "$2"
+    ;;
+  attach)
+    if [[ $# -ne 2 ]]; then
+      usage >&2
+      exit 1
+    fi
+    tmux attach -t "$2"
+    ;;
+  status)
+    if [[ $# -eq 2 ]]; then
+      tmux list-windows -t "$2" -F '#{window_name}' |
+        while IFS= read -r window; do
+          tmux list-panes -t "$2:$window" -F '#{session_name}:#{window_name}.#{pane_index} #{pane_id} #{@agent_name} #{pane_current_command}'
+        done
+    else
+      tmux list-sessions
+    fi
+    ;;
+  -h|--help|help|"")
+    usage
+    ;;
+  *)
+    echo "Unknown command: $cmd" >&2
+    usage >&2
+    exit 1
+    ;;
+esac
