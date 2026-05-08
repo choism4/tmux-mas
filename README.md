@@ -46,22 +46,10 @@ boringly visible:
 
 ## Same Prompt, Different Runtime
 
-Same scenario. Same task prompt. Compare the artifacts.
+Each pair below uses one task prompt. The left artifact came from one agent. The
+right artifact came from a `tmux-mas` team run using that same task prompt.
 
-### Comic Artifact
-
-| Without tmux-mas | Using tmux-mas |
-| --- | --- |
-| ![Single-agent comic artifact](assets/comics/codex-claude-idea-relay.png) | ![tmux-mas comic artifact](assets/comics/codex-claude-rivalry-merge-room-v2.png) |
-
-Scenario: [`codex-claude-rivalry-comic-codex.yml`](scenarios/codex-claude-rivalry-comic-codex.yml)
-
-### Artifact-Oriented Scenarios
-
-These examples are built to produce files you can open, inspect, screenshot, or
-ship.
-
-#### Landing Page
+### 1. Landing Page
 
 | Without tmux-mas | Using tmux-mas |
 | --- | --- |
@@ -73,7 +61,7 @@ tmux-mas run landing-page
 
 Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
 
-#### Generative Art Studio
+### 2. Generative Art Studio
 
 | Without tmux-mas | Using tmux-mas |
 | --- | --- |
@@ -92,7 +80,7 @@ runs/<id>/artifact/gallery.html
 
 Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-codex.yml)
 
-#### Travel Itinerary as a Print-Ready PDF Source
+### 3. Travel Itinerary as a Print-Ready PDF Source
 
 | Without tmux-mas | Using tmux-mas |
 | --- | --- |
@@ -111,26 +99,6 @@ runs/<id>/artifact/itinerary.md
 ```
 
 Scenario: [`travel-itinerary-pdf-claude.yml`](scenarios/travel-itinerary-pdf-claude.yml)
-
-#### API Spec Design
-
-| Without tmux-mas | Using tmux-mas |
-| --- | --- |
-| ![Single-agent API spec artifact](assets/readme/api-without.png) | ![tmux-mas API spec artifact](assets/readme/api-with.png) |
-
-> Design an API for launching, listing, watching, and stopping multi-agent tmux
-> sessions. Include errors and client examples.
-
-```bash
-tmux-mas run api-spec-design-codex
-```
-
-```text
-runs/<id>/artifact/openapi.yaml
-runs/<id>/artifact/client-examples.md
-```
-
-Scenario: [`api-spec-design-codex.yml`](scenarios/api-spec-design-codex.yml)
 
 ## Install
 
