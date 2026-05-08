@@ -1,0 +1,26 @@
+name: code-review-codex
+session: code-review-codex
+window: review
+runner:
+  type: codex
+  command: codex --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+  submit_key: C-m
+description: Codex review team for code risk triage.
+agents:
+  - id: LEAD
+    role: Coordinates review scope and asks for concrete findings.
+  - id: REVIEWER
+    role: Finds correctness, regression, and test risks.
+  - id: TESTER
+    role: Suggests verification commands and missing coverage.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: LEAD
+  prompt: Ask REVIEWER and TESTER for one concrete risk each.
+rules:
+  - Findings first.
+  - Keep messages actionable.
+success:
+  - Review reaches a short finding list.

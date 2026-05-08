@@ -1,0 +1,28 @@
+name: mock-incident-response
+session: mock-incident-response
+window: incident
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock incident response room.
+agents:
+  - id: IC
+    role: Incident commander.
+  - id: OPS
+    role: Checks runtime health.
+  - id: APP
+    role: Checks application behavior.
+  - id: COMMS
+    role: Prepares concise updates.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: IC
+  prompt: Start the incident room and request one signal.
+rules:
+  - Prefer concrete observations.
+success:
+  - IC starts.
+  - One responder acknowledges.

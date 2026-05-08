@@ -1,0 +1,27 @@
+name: mock-design-review
+session: mock-design-review
+window: design
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock design review for UI critique flow.
+agents:
+  - id: FACILITATOR
+    role: Opens the review.
+  - id: DESIGNER
+    role: Gives visual critique.
+  - id: ENGINEER
+    role: Gives implementation constraints.
+  - id: QA
+    role: Gives acceptance checks.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: FACILITATOR
+  prompt: Ask for one critique.
+rules:
+  - Avoid long explanations.
+success:
+  - Review receives at least one response.

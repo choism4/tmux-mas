@@ -1,0 +1,27 @@
+name: mock-security-review
+session: mock-security-review
+window: security
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock security review team.
+agents:
+  - id: LEAD
+    role: Opens the review.
+  - id: APPSEC
+    role: Flags application risk.
+  - id: INFRA
+    role: Flags infrastructure risk.
+  - id: PRIVACY
+    role: Flags data handling risk.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: LEAD
+  prompt: Ask for one concrete risk.
+rules:
+  - Skip irrelevant issues.
+success:
+  - One reviewer responds.

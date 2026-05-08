@@ -1,0 +1,24 @@
+name: hello-gemini
+session: hello-gemini
+window: team
+runner:
+  type: gemini
+  command: gemini --yolo
+  submit_key: C-m
+description: Two Gemini panes exchange one short message.
+agents:
+  - id: HOST
+    role: Starts the exchange, asks one concise question, and closes after one reply.
+  - id: GUEST
+    role: Replies once with a concise answer, then stops.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: HOST
+  prompt: Send GUEST one short greeting and ask whether the tmux message reached them.
+rules:
+  - Keep messages short.
+success:
+  - HOST sends one message to GUEST.
+  - GUEST sends one reply to HOST.

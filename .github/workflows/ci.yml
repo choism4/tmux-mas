@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Install tmux
+        run: sudo apt-get update && sudo apt-get install -y tmux
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
       - name: Check shell
@@ -22,6 +24,8 @@ jobs:
           ./tmux-mas --version
           ./tmux-mas doctor
       - name: Check Python
-        run: python -m py_compile runtime/run_scenario.py runtime/doctor.py tests/smoke_parse.py
+        run: python -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py
       - name: Parse scenarios
         run: python tests/smoke_parse.py
+      - name: Run mock scenarios
+        run: python tests/run_mock_scenarios.py

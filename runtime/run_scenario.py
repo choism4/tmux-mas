@@ -256,6 +256,7 @@ def render_start_script(*, runner: dict[str, str], agent_bin: Path, prompt_file:
     return f"""#!/usr/bin/env bash
 set -euo pipefail
 export PATH={shell_quote(str(agent_bin))}:"$PATH"
+export TMUX_MAS_ROOT={shell_quote(str(ROOT))}
 export AGENT_BROWSER_SCREENSHOT_DIR={shell_quote(str(screenshot_dir))}
 mkdir -p "$AGENT_BROWSER_SCREENSHOT_DIR"
 cd {cwd}

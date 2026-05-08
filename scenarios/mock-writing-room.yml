@@ -1,0 +1,26 @@
+name: mock-writing-room
+session: mock-writing-room
+window: writing
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock writing room for copy, editing, and fact checks.
+agents:
+  - id: EDITOR
+    role: Opens the writing room.
+  - id: COPY
+    role: Suggests copy.
+  - id: FACT
+    role: Checks claims.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: EDITOR
+  prompt: Ask for one draft direction.
+rules:
+  - Be concise.
+success:
+  - EDITOR starts.
+  - One collaborator replies.

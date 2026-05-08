@@ -17,6 +17,8 @@ def main() -> None:
     scenarios = sorted((ROOT / "scenarios").glob("*.yml")) + sorted((ROOT / "scenarios").glob("*.yaml"))
     if not scenarios:
         raise SystemExit("No scenarios found")
+    if len(scenarios) < 10:
+        raise SystemExit("Expected at least 10 bundled scenarios")
 
     for path in scenarios:
         with path.open("r", encoding="utf-8") as f:

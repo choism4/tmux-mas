@@ -28,6 +28,7 @@ mkdir -p "$BIN_DIR"
 ln -sf "$ROOT/tmux-mas" "$TARGET"
 chmod +x "$ROOT/tmux-mas" "$ROOT/runtime/run_scenario.py"
 chmod +x "$ROOT/runtime/doctor.py"
+chmod +x "$ROOT/runtime/watch_session.py"
 
 echo "Installed tmux-mas $VERSION: $TARGET"
 

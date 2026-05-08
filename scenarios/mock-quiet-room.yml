@@ -1,0 +1,26 @@
+name: mock-quiet-room
+session: mock-quiet-room
+window: quiet
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock scenario where not every agent needs to answer.
+agents:
+  - id: OWNER
+    role: Opens the room.
+  - id: OBSERVER
+    role: Replies only when useful.
+  - id: SPECIALIST
+    role: Replies only to direct questions.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: OWNER
+  prompt: Ask one direct question.
+rules:
+  - Receiving a message does not require a response.
+success:
+  - OWNER starts.
+  - The room does not require everyone to speak.

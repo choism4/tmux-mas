@@ -1,0 +1,26 @@
+name: mock-standup
+session: mock-standup
+window: standup
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock product standup with three roles.
+agents:
+  - id: LEAD
+    role: Opens the standup.
+  - id: DEV
+    role: Responds with implementation status.
+  - id: QA
+    role: Responds only when useful.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: LEAD
+  prompt: Ask for one concise status update.
+rules:
+  - Keep updates short.
+success:
+  - LEAD starts the exchange.
+  - At least one teammate replies.

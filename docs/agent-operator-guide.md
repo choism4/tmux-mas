@@ -59,6 +59,12 @@ Stop the session:
 ./tmux-mas stop hello-claude
 ```
 
+Run deterministic tmux smoke scenarios:
+
+```bash
+python3 tests/run_mock_scenarios.py
+```
+
 ## Scenario Name Resolution
 
 `tmux-mas run <scenario>` resolves scenarios in this order:

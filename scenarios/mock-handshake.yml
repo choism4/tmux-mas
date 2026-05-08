@@ -1,0 +1,24 @@
+name: mock-handshake
+session: mock-handshake
+window: team
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock two-agent handshake for tmux-mas smoke testing.
+agents:
+  - id: HOST
+    role: Starts a one-message handshake.
+  - id: GUEST
+    role: Replies once.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: HOST
+  prompt: Send GUEST one short message.
+rules:
+  - Keep messages short.
+success:
+  - HOST sends one message.
+  - GUEST replies once.

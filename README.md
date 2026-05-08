@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/choism4/tmux-mas/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0ea5e9"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.2-f43f5e">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.3-f43f5e">
   <img alt="Requires tmux" src="https://img.shields.io/badge/requires-tmux-22c55e">
   <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
 </p>
@@ -90,6 +90,12 @@ Run the landing page team:
 ./tmux-mas doctor landing-page
 ./tmux-mas run landing-page
 tmux attach -t landing-page-team-yml
+```
+
+Run the deterministic mock test suite:
+
+```bash
+python3 tests/run_mock_scenarios.py
 ```
 
 ## The Core Idea
@@ -231,7 +237,18 @@ Not required:
 
 - [Agent Operator Guide](docs/agent-operator-guide.md)
 - [Example: Claude hello](scenarios/hello-claude.yml)
+- [Example: Codex hello](scenarios/hello-codex.yml)
+- [Example: Gemini hello](scenarios/hello-gemini.yml)
 - [Example: landing page team](scenarios/landing-page.yml)
+- Mock scenarios:
+  - [mock-handshake](scenarios/mock-handshake.yml)
+  - [mock-standup](scenarios/mock-standup.yml)
+  - [mock-incident-response](scenarios/mock-incident-response.yml)
+  - [mock-design-review](scenarios/mock-design-review.yml)
+  - [mock-product-trio](scenarios/mock-product-trio.yml)
+  - [mock-security-review](scenarios/mock-security-review.yml)
+  - [mock-writing-room](scenarios/mock-writing-room.yml)
+  - [mock-quiet-room](scenarios/mock-quiet-room.yml)
 
 ## Release Checklist
 
@@ -240,9 +257,10 @@ bash -n tmux-mas install.sh
 ./tmux-mas --help
 ./tmux-mas --version
 ./tmux-mas doctor
-python3 -m py_compile runtime/run_scenario.py runtime/doctor.py tests/smoke_parse.py
+python3 -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py
 python3 tests/smoke_parse.py
-git tag v0.1.2
+python3 tests/run_mock_scenarios.py
+git tag v0.1.3
 git push origin main --tags
 ```
 

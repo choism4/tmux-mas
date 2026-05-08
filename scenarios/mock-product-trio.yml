@@ -1,0 +1,26 @@
+name: mock-product-trio
+session: mock-product-trio
+window: trio
+runner:
+  type: custom
+  command: python3 "$TMUX_MAS_ROOT/examples/mock_agent.py"
+  submit_key: C-m
+description: Mock PM, design, and engineering conversation.
+agents:
+  - id: PM
+    role: Frames the decision.
+  - id: DESIGN
+    role: Responds with user impact.
+  - id: ENG
+    role: Responds with delivery risk.
+tools:
+  - send
+  - broadcast
+kickoff:
+  agent: PM
+  prompt: Ask for one tradeoff.
+rules:
+  - Keep tradeoffs explicit.
+success:
+  - PM starts.
+  - One teammate replies.
