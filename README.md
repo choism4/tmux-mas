@@ -15,11 +15,10 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0ea5e9"></a>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.5-f43f5e">
   <img alt="Requires tmux" src="https://img.shields.io/badge/requires-tmux-22c55e">
-  <img alt="cmux not required" src="https://img.shields.io/badge/cmux-not_required-64748b">
 </p>
 
 <p align="center">
-  Requires <code>tmux</code>. <code>cmux</code> is not required.
+  Requires <code>tmux</code>.
 </p>
 
 <p align="center">
@@ -30,9 +29,18 @@
 live tmux room where each agent CLI gets its own pane, prompt, role, and
 run-local communication tools.
 
-| You define | `tmux-mas` starts | You inspect |
-| --- | --- |
-| A scenario file with agents, runner command, tools, and success criteria. | A real tmux session with named panes and injected `agent_send` / `agent_broadcast`. | The panes directly with `attach`, `status`, and `watch`; no hidden coordinator. |
+<table>
+  <tr>
+    <th>You define</th>
+    <th><code>tmux-mas</code> starts</th>
+    <th>You inspect</th>
+  </tr>
+  <tr>
+    <td>A scenario file with agents, runner command, tools, and success criteria.</td>
+    <td>A real tmux session with named panes and injected <code>agent_send</code> / <code>agent_broadcast</code>.</td>
+    <td>The panes directly with <code>attach</code>, <code>status</code>, and <code>watch</code>; no hidden coordinator.</td>
+  </tr>
+</table>
 
 ---
 
@@ -50,7 +58,7 @@ and reproducible.
 | YAML scenarios | Teams are reproducible, reviewable, and shareable. |
 | Run-local tools | Agents communicate through a stable contract, not shell glue. |
 | Runner command prefixes | Use `codex`, `claude`, `gemini`, or any custom agent CLI. |
-| Required system package | `tmux` is required. `cmux` is not. |
+| Required system package | `tmux` is required. |
 
 ## Same Prompt, Different Runtime
 
@@ -309,10 +317,6 @@ Required:
 Optional:
 
 - `agent-browser` for browser/UI scenarios
-
-Not required:
-
-- `cmux`
 
 ## Docs
 

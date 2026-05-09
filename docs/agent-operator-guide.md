@@ -223,8 +223,6 @@ Agent usage:
 agent-browser open http://127.0.0.1:12345
 ```
 
-`cmux` is not required.
-
 ## Environment Overrides
 
 Override runner type:
