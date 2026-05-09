@@ -7,7 +7,7 @@
 <p align="center">
   <strong>tmux Multi Agents System</strong>
   <br>
-  Spin up agent CLI teams as tmux panes. Let them talk with injected tools.
+  Run agent CLI teams in tmux panes.
 </p>
 
 <p align="center">
@@ -19,41 +19,49 @@
 </p>
 
 <p align="center">
-  <img src="assets/comics/codex-claude-rivalry-moe-final.png" alt="Claude Code, Codex, Gemini, and tmux-mas four-panel comic" width="860">
+  Requires <code>tmux</code>. <code>cmux</code> is not required.
 </p>
+
+`tmux-mas` means **tmux Multi Agents System**. It turns a YAML scenario into a
+live tmux room where each agent CLI gets its own pane, prompt, role, and
+run-local communication tools.
+
+| You define | `tmux-mas` starts | You inspect |
+| --- | --- |
+| A scenario file with agents, runner command, tools, and success criteria. | A real tmux session with named panes and injected `agent_send` / `agent_broadcast`. | The panes directly with `attach`, `status`, and `watch`; no hidden coordinator. |
 
 ---
 
-`tmux-mas` means **tmux Multi Agents System**.
-
-`tmux-mas` starts a tmux session from a YAML scenario. Each agent gets its own
-pane, prompt, role, and run-local tools such as `agent_send` and
-`agent_broadcast`. The launcher starts the team; it does not sit in the middle
-of the conversation.
+The launcher starts the team and then steps out. Agents talk through run-local
+tools instead of global shell hacks, so the coordination surface stays visible
+and reproducible.
 
 ## Why
 
-Most multi-agent demos hide the actual coordination surface. `tmux-mas` makes it
-boringly visible:
+`tmux-mas` keeps the coordination surface explicit and reproducible:
 
 | What you get | Why it matters |
 | --- | --- |
-| One agent CLI per tmux pane | Every participant is inspectable and interruptible. |
+| One agent CLI per tmux pane | Every participant is visible, inspectable, and interruptible. |
 | YAML scenarios | Teams are reproducible, reviewable, and shareable. |
-| Run-local tools | Agents communicate through a stable contract, not global shell hacks. |
+| Run-local tools | Agents communicate through a stable contract, not shell glue. |
 | Runner command prefixes | Use `codex`, `claude`, `gemini`, or any custom agent CLI. |
-| No `cmux` dependency | The required system package is `tmux`. |
+| Required system package | `tmux` is required. `cmux` is not. |
 
 ## Same Prompt, Different Runtime
 
-Each pair below uses one task prompt. The left artifact came from one agent. The
-right artifact came from a `tmux-mas` team run using that same task prompt.
+Read each pair left to right. The left image is the single-agent baseline; the
+right image is the `tmux-mas` team run. The point is to compare the artifact,
+not the story around it.
 
 ### 1. Landing Page
 
-| Without tmux-mas | Using tmux-mas |
+| Baseline | tmux-mas run |
 | --- | --- |
-| ![Single-agent landing page artifact](assets/readme/landing-without.png) | ![tmux-mas landing page artifact](assets/readme/landing-with.png) |
+| ![Before: single-agent landing page artifact](assets/readme/landing-without.png) | ![After: tmux-mas landing page artifact](assets/readme/landing-with.png) |
+
+What to compare: the team output is more product-specific, with a clearer
+terminal-native visual signal and less generic SaaS framing.
 
 ```bash
 tmux-mas run landing-page
@@ -63,9 +71,12 @@ Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
 
 ### 2. Generative Art Studio
 
-| Without tmux-mas | Using tmux-mas |
+| Baseline | tmux-mas run |
 | --- | --- |
-| ![Single-agent generative art artifact](assets/readme/art-without.png) | ![tmux-mas generative art artifact](assets/readme/art-with.png) |
+| ![Before: single-agent generative art artifact](assets/readme/art-without.png) | ![After: tmux-mas generative art artifact](assets/readme/art-with.png) |
+
+What to compare: the team output organizes the prompt into explicit panes,
+roles, and message paths instead of a looser abstract network.
 
 > Create a browser-openable generative art gallery. Explore a visual direction,
 > implement it, critique it, and produce the final artifact.
@@ -82,9 +93,12 @@ Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-co
 
 ### 3. Travel Itinerary as a Print-Ready PDF Source
 
-| Without tmux-mas | Using tmux-mas |
+| Baseline | tmux-mas run |
 | --- | --- |
-| ![Single-agent travel itinerary artifact](assets/readme/travel-without.png) | ![tmux-mas travel itinerary artifact](assets/readme/travel-with.png) |
+| ![Before: single-agent travel itinerary artifact](assets/readme/travel-without.png) | ![After: tmux-mas travel itinerary artifact](assets/readme/travel-with.png) |
+
+What to compare: the team output foregrounds trip logic and constraints before
+the daily plan, making the itinerary easier to audit.
 
 > Plan a four-day Tokyo trip for food, design, and record stores. Make it
 > realistic, readable, rainy-day safe, and print-ready.
@@ -128,12 +142,18 @@ You can also run it directly from the repo:
 
 ## Quick Start
 
-Run the smallest Claude scenario:
+From the repo root, refresh the local binary if needed:
+
+```bash
+./install.sh
+```
+
+Then validate and run a small scenario:
 
 ```bash
 ./tmux-mas doctor hello-claude
 ./tmux-mas run hello-claude
-tmux attach -t hello-claude
+./tmux-mas attach hello-claude
 ```
 
 If Claude asks to trust the workspace, select `1. Yes`.
@@ -144,12 +164,12 @@ Stop it:
 ./tmux-mas stop hello-claude
 ```
 
-Run the landing page team:
+Run a public team scenario with a visible session name:
 
 ```bash
 ./tmux-mas doctor landing-page
 ./tmux-mas run landing-page
-tmux attach -t landing-page-team-yml
+./tmux-mas attach landing-page-team-yml
 ```
 
 Run the deterministic mock test suite:
@@ -162,7 +182,7 @@ python3 tests/run_public_scenarios_with_mock.py --jobs 8
 
 ## The Core Idea
 
-An agent receives a prompt that includes:
+Each agent receives a prompt that includes:
 
 - its role
 - the participant pane map
@@ -178,13 +198,8 @@ agent_send %214 "HOST: Did this tmux message reach you?"
 agent_broadcast "LEAD: Everyone give one concrete risk."
 ```
 
-The submit primitive is intentionally small:
-
-```bash
-tmux send-keys -t "$pane" -l "$message"
-sleep 0.3
-tmux send-keys -t "$pane" "$submit_key"
-```
+tmux-mas renders the prompt, appends it to the runner command, and sends the
+scenario-specific submit key after the message text.
 
 ## Scenario Example
 
@@ -258,20 +273,20 @@ Known local submit keys:
 
 ## Commands
 
-```bash
-tmux-mas --help
-tmux-mas --version
-tmux-mas doctor [scenario-name]
-tmux-mas list
-tmux-mas run <scenario.yml|scenario-name>
-tmux-mas status [session]
-tmux-mas watch <session>
-tmux-mas attach <session>
-tmux-mas stop <session>
-```
+| Command | Purpose |
+| --- | --- |
+| `tmux-mas --help` | Show the full CLI. |
+| `tmux-mas --version` | Print the installed version. |
+| `tmux-mas list` | Print bundled scenarios. |
+| `tmux-mas doctor [scenario]` | Check `tmux`, `python3`, `PyYAML`, and optionally validate a scenario and runner. |
+| `tmux-mas run <scenario.yml or scenario-name>` | Start a tmux session from a YAML file or bundled scenario name. |
+| `tmux-mas status [session]` | Print tmux sessions, or panes for one session. |
+| `tmux-mas watch <session>` | Poll pane output and report `changed`, `quiet`, `idle`, `dead`, and `exited` panes. |
+| `tmux-mas attach <session>` | Attach to the tmux session. |
+| `tmux-mas stop <session>` | Kill the tmux session. |
 
-`watch` is the operator awareness loop. It polls pane output and reports
-`changed`, `quiet`, `idle`, and `agent-exited` states:
+`watch` is the operator awareness loop. Use `--once` for a single snapshot and
+`--idle-seconds` to control when a pane is considered idle:
 
 ```bash
 tmux-mas watch hello-claude --idle-seconds 120
@@ -298,37 +313,9 @@ Not required:
 ## Docs
 
 - [Agent Operator Guide](docs/agent-operator-guide.md)
-- [Example: Claude hello](scenarios/hello-claude.yml)
-- [Example: Codex hello](scenarios/hello-codex.yml)
-- [Example: Gemini hello](scenarios/hello-gemini.yml)
-- [Example: landing page team](scenarios/landing-page.yml)
-- Artifact-oriented examples:
-  - [generative-art-studio-codex](scenarios/generative-art-studio-codex.yml)
-  - [travel-itinerary-pdf-claude](scenarios/travel-itinerary-pdf-claude.yml)
-  - [tabletop-game-jam-gemini](scenarios/tabletop-game-jam-gemini.yml)
-  - [podcast-production-room-claude](scenarios/podcast-production-room-claude.yml)
-  - [newsletter-briefing-codex](scenarios/newsletter-briefing-codex.yml)
-  - [api-spec-design-codex](scenarios/api-spec-design-codex.yml)
-  - [workshop-curriculum-claude](scenarios/workshop-curriculum-claude.yml)
-  - [ops-runbook-codex](scenarios/ops-runbook-codex.yml)
-  - [brand-system-studio-gemini](scenarios/brand-system-studio-gemini.yml)
-  - [ux-research-synthesis-claude](scenarios/ux-research-synthesis-claude.yml)
-- Mock scenarios live under `tests/fixtures/scenarios/` and are used only for deterministic CI.
-
-## Release Checklist
-
-```bash
-bash -n tmux-mas install.sh
-./tmux-mas --help
-./tmux-mas --version
-./tmux-mas doctor
-python3 -m py_compile runtime/run_scenario.py runtime/doctor.py runtime/watch_session.py examples/mock_agent.py tests/smoke_parse.py tests/run_mock_scenarios.py tests/run_public_scenarios_with_mock.py
-python3 tests/smoke_parse.py
-python3 tests/run_public_scenarios_with_mock.py
-python3 tests/run_mock_scenarios.py
-git tag v0.1.5
-git push origin main --tags
-```
+- Scenario examples: `scenarios/hello-claude.yml`, `scenarios/hello-codex.yml`, `scenarios/hello-gemini.yml`, `scenarios/landing-page.yml`, `scenarios/generative-art-studio-codex.yml`, `scenarios/travel-itinerary-pdf-claude.yml`
+- More scenarios: `scenarios/`
+- Mock scenarios for CI: `tests/fixtures/scenarios/`
 
 ## Status
 
