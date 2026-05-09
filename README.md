@@ -62,9 +62,8 @@ and reproducible.
 
 ## Same Prompt, Different Runtime
 
-Read each pair left to right. The left image is the single-agent baseline; the
-right image is the `tmux-mas` team run. The point is to compare the artifact,
-not the story around it.
+Read each pair left to right. The left image is a single-agent baseline; the
+right image is the same task shaped through a `tmux-mas` team run.
 
 ### 1. Landing Page
 
@@ -79,8 +78,9 @@ not the story around it.
   </tr>
 </table>
 
-What to compare: the team output is more product-specific, with a clearer
-terminal-native visual signal and less generic SaaS framing.
+What to compare: the baseline stops at a generic page draft; the team run turns
+the same landing-page task into a specific SignalDesk artifact with positioning,
+proof, and a visible review trail.
 
 ```bash
 tmux-mas run landing-page
@@ -101,8 +101,8 @@ Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
   </tr>
 </table>
 
-What to compare: the team output organizes the prompt into explicit panes,
-roles, and message paths instead of a looser abstract network.
+What to compare: the baseline is a loose visual field; the team run makes the
+curation, implementation, critique, and final selection visible in the artifact.
 
 > Create a browser-openable generative art gallery. Explore a visual direction,
 > implement it, critique it, and produce the final artifact.
@@ -130,8 +130,8 @@ Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-co
   </tr>
 </table>
 
-What to compare: the team output foregrounds trip logic and constraints before
-the daily plan, making the itinerary easier to audit.
+What to compare: the baseline is a plain itinerary list; the team run exposes
+route logic, rainy-day constraints, local planning, and final editorial checks.
 
 > Plan a four-day Tokyo trip for food, design, and record stores. Make it
 > realistic, readable, rainy-day safe, and print-ready.
