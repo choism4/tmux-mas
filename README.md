@@ -22,6 +22,10 @@
   Requires <code>tmux</code>. <code>cmux</code> is not required.
 </p>
 
+<p align="center">
+  <img src="assets/comics/codex-claude-rivalry-moe-final.png" alt="tmux-mas comic showing agent CLIs working together" width="860">
+</p>
+
 `tmux-mas` means **tmux Multi Agents System**. It turns a YAML scenario into a
 live tmux room where each agent CLI gets its own pane, prompt, role, and
 run-local communication tools.
