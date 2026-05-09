@@ -68,9 +68,16 @@ not the story around it.
 
 ### 1. Landing Page
 
-| Baseline | tmux-mas run |
-| --- | --- |
-| ![Before: single-agent landing page artifact](assets/readme/landing-without.png) | ![After: tmux-mas landing page artifact](assets/readme/landing-with.png) |
+<table>
+  <tr>
+    <th width="50%">Baseline</th>
+    <th width="50%"><code>tmux-mas run</code></th>
+  </tr>
+  <tr>
+    <td width="50%"><img src="assets/readme/landing-without.png" alt="Before: single-agent landing page artifact"></td>
+    <td width="50%"><img src="assets/readme/landing-with.png" alt="After: tmux-mas landing page artifact"></td>
+  </tr>
+</table>
 
 What to compare: the team output is more product-specific, with a clearer
 terminal-native visual signal and less generic SaaS framing.
@@ -83,9 +90,16 @@ Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
 
 ### 2. Generative Art Studio
 
-| Baseline | tmux-mas run |
-| --- | --- |
-| ![Before: single-agent generative art artifact](assets/readme/art-without.png) | ![After: tmux-mas generative art artifact](assets/readme/art-with.png) |
+<table>
+  <tr>
+    <th width="50%">Baseline</th>
+    <th width="50%"><code>tmux-mas run</code></th>
+  </tr>
+  <tr>
+    <td width="50%"><img src="assets/readme/art-without.png" alt="Before: single-agent generative art artifact"></td>
+    <td width="50%"><img src="assets/readme/art-with.png" alt="After: tmux-mas generative art artifact"></td>
+  </tr>
+</table>
 
 What to compare: the team output organizes the prompt into explicit panes,
 roles, and message paths instead of a looser abstract network.
@@ -105,9 +119,16 @@ Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-co
 
 ### 3. Travel Itinerary as a Print-Ready PDF Source
 
-| Baseline | tmux-mas run |
-| --- | --- |
-| ![Before: single-agent travel itinerary artifact](assets/readme/travel-without.png) | ![After: tmux-mas travel itinerary artifact](assets/readme/travel-with.png) |
+<table>
+  <tr>
+    <th width="50%">Baseline</th>
+    <th width="50%"><code>tmux-mas run</code></th>
+  </tr>
+  <tr>
+    <td width="50%"><img src="assets/readme/travel-without.png" alt="Before: single-agent travel itinerary artifact"></td>
+    <td width="50%"><img src="assets/readme/travel-with.png" alt="After: tmux-mas travel itinerary artifact"></td>
+  </tr>
+</table>
 
 What to compare: the team output foregrounds trip logic and constraints before
 the daily plan, making the itinerary easier to audit.
