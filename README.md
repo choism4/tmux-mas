@@ -32,7 +32,7 @@ run-local communication tools.
 <table>
   <tr>
     <th>You define</th>
-    <th><code>tmux-mas</code> starts</th>
+    <th>tmux-mas starts</th>
     <th>You inspect</th>
   </tr>
   <tr>
@@ -71,7 +71,7 @@ not the story around it.
 <table>
   <tr>
     <th width="50%">Baseline</th>
-    <th width="50%"><code>tmux-mas run</code></th>
+    <th width="50%">tmux-mas run</th>
   </tr>
   <tr>
     <td width="50%"><img src="assets/readme/landing-without.png" alt="Before: single-agent landing page artifact"></td>
@@ -93,7 +93,7 @@ Scenario: [`landing-page.yml`](scenarios/landing-page.yml)
 <table>
   <tr>
     <th width="50%">Baseline</th>
-    <th width="50%"><code>tmux-mas run</code></th>
+    <th width="50%">tmux-mas run</th>
   </tr>
   <tr>
     <td width="50%"><img src="assets/readme/art-without.png" alt="Before: single-agent generative art artifact"></td>
@@ -122,7 +122,7 @@ Scenario: [`generative-art-studio-codex.yml`](scenarios/generative-art-studio-co
 <table>
   <tr>
     <th width="50%">Baseline</th>
-    <th width="50%"><code>tmux-mas run</code></th>
+    <th width="50%">tmux-mas run</th>
   </tr>
   <tr>
     <td width="50%"><img src="assets/readme/travel-without.png" alt="Before: single-agent travel itinerary artifact"></td>
